@@ -10,8 +10,8 @@ class AppConfig {
   // ---------------------------------------------------------------------------
   // Find these in the Supabase dashboard:
   // Project Settings -> API -> Project URL + "publishable" (anon) public key.
-  static const String supabaseUrl = 'https://gyuuswzsioqgyvguzhqx.supabase.co';
-  static const String supabasePublishableKey = 'sb_publishable_SRIstunHzj9L16-Gl4GpcA_zPVkqZ8z';
+  static const String supabaseUrl = 'https://ooovgoxpxhncpzilrnpl.supabase.co';
+  static const String supabasePublishableKey = 'sb_publishable_Jgf6XDXbkUK0QfJlCjvBHA_ya9jFAwq';
 
   // ---------------------------------------------------------------------------
   // Splash screen
@@ -21,7 +21,7 @@ class AppConfig {
   /// To use your own splash image, simply replace the file at
   /// `assets/images/splash.png` (keeping the same name), or point this field at
   /// a different file under `assets/images/` and rebuild.
-  static const String splashImageAsset = 'assets/images/splash.png';
+  static const String splashImageAsset = 'assets/images/splash-cakmoji.png';
 
   /// How long the splash screen stays on screen before navigating away.
   static const Duration splashDuration = Duration(seconds: 2);

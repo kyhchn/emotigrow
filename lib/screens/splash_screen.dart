@@ -1,10 +1,10 @@
 import 'dart:async';
 
+import 'package:cakmoji_flutter/screens/login_generated.dart';
 import 'package:flutter/material.dart';
 
 import '../core/app_config.dart';
 import '../services/supabase_service.dart';
-import 'home_screen.dart';
 import 'login_screen.dart';
 
 /// A splash screen designed to be driven by a single image.
@@ -42,7 +42,7 @@ class _SplashScreenState extends State<SplashScreen>
     if (!mounted) return;
 
     final Widget destination = _isSignedIn
-        ? const HomeScreen()
+        ?  LoginGenerated()
         : const LoginScreen();
 
     Navigator.of(context).pushReplacement(
@@ -50,7 +50,7 @@ class _SplashScreenState extends State<SplashScreen>
         pageBuilder: (_, animation, __) => destination,
         transitionsBuilder: (_, animation, __, child) =>
             FadeTransition(opacity: animation, child: child),
-        transitionDuration: const Duration(milliseconds: 400),
+        transitionDuration: const Duration(milliseconds: 800),
       ),
     );
   }
