@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "833718491791",
+    "firebase_url": "https://cakmoji-bb2c8-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "cakmoji-bb2c8",
+    "storage_bucket": "cakmoji-bb2c8.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:833718491791:android:ffbe69efe0d57a7b34eefa",
+        "android_client_info": {
+          "package_name": "com.cakmoji.cakmoji_flutter"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAub50Z2fbBxmrajVYhpWf3CW30NZ4V-6A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
