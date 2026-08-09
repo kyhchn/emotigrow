@@ -35,4 +35,28 @@ void main() {
     // No overflow / layout exceptions.
     expect(tester.takeException(), isNull);
   });
+
+  testWidgets('Daftar tab reveals the Name field (register mode)',
+      (tester) async {
+    tester.view.physicalSize = const Size(390, 844);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.reset);
+
+    await tester.pumpWidget(const MaterialApp(home: LoginGenerated()));
+
+    // Masuk mode: no name field yet.
+    expect(find.text('Nama'), findsNothing);
+    expect(find.text('Nama lengkap'), findsNothing);
+
+    // Switch to the "Daftar" tab.
+    await tester.tap(find.text('Daftar'));
+    await tester.pumpAndSettle();
+
+    // Register mode: name field appears.
+    expect(find.text('Nama'), findsOneWidget);
+    expect(find.text('Nama lengkap'), findsOneWidget);
+    expect(find.text('Email atau Nomor HP'), findsOneWidget);
+    expect(find.text('Kata Sandi'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
 }

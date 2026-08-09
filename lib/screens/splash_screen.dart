@@ -1,11 +1,11 @@
 import 'dart:async';
 
+import 'package:cakmoji_flutter/screens/homepage_generated.dart';
 import 'package:cakmoji_flutter/screens/login_generated.dart';
 import 'package:flutter/material.dart';
 
 import '../core/app_config.dart';
 import '../services/supabase_service.dart';
-import 'login_screen.dart';
 
 /// A splash screen designed to be driven by a single image.
 ///
@@ -42,8 +42,8 @@ class _SplashScreenState extends State<SplashScreen>
     if (!mounted) return;
 
     final Widget destination = _isSignedIn
-        ?  LoginGenerated()
-        : const LoginScreen();
+        ?  HomepageGenerated()
+        : const LoginGenerated();
 
     Navigator.of(context).pushReplacement(
       PageRouteBuilder<void>(

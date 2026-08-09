@@ -28,7 +28,12 @@ class SupabaseService {
   /// Allowed values for the user's `type`.
   static const List<String> userTypes = ['petani', 'pelanggan'];
 
-  Future<void> signUp({
+  /// Creates the auth user + profile row.
+  ///
+  /// Returns `true` when the user is usable immediately (e.g. email
+  /// confirmation is disabled), or `false` when the user must first confirm
+  /// their email before signing in.
+  Future<bool> signUp({
     required String email,
     required String password,
     required String name,
@@ -43,7 +48,7 @@ class SupabaseService {
     if (user == null) {
       // Happens when "Confirm email" is enabled: no session yet, so the user
       // must verify their email before they can sign in / get a profile row.
-      return;
+      return false;
     }
 
     // Store the extra profile info. Requires the `profiles` table and the
@@ -54,6 +59,7 @@ class SupabaseService {
       'name': name.trim(),
       'type': userType, // 'petani' | 'pelanggan'
     });
+    return true;
   }
 
   Future<void> signOut() => _client.auth.signOut();

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'app_colors.dart';
+
 /// Centralised styling for the app.
 ///
 /// The Inter font family is registered in `pubspec.yaml` (all 9 weights).
@@ -167,10 +169,11 @@ ThemeData buildAppTheme({Brightness brightness = Brightness.light}) {
   final base = ThemeData(
     brightness: brightness,
     colorScheme: ColorScheme.fromSeed(
-      seedColor: const Color(0xFF7C4DFF),
+      seedColor: AppColors.primary,
       brightness: brightness,
     ),
     useMaterial3: true,
+    scaffoldBackgroundColor: AppColors.background,
   );
 
   // Override the whole text theme to use Inter.
