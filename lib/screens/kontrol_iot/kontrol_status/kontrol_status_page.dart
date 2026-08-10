@@ -25,15 +25,13 @@ class _KontrolStatusPageState extends State<KontrolStatusPage> {
 
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: Expanded(
-          child: ListView(
-            //generate for 20 items
-            children: List.generate(
-              20,
-              (index) => Padding(
-                padding: const EdgeInsets.only(bottom: 16),
-                child: controlStatusCard(context),
-              ),
+        child: ListView(
+          //generate for 20 items
+          children: List.generate(
+            20,
+            (index) => Padding(
+              padding: const EdgeInsets.only(bottom: 16),
+              child: controlStatusCard(context),
             ),
           ),
         ),
@@ -48,12 +46,12 @@ class _KontrolStatusPageState extends State<KontrolStatusPage> {
         color: Colors.white,
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
-          color: const Color(0xFF097004).withOpacity(0.2),
+          color: const Color(0xFF097004).withValues(alpha: 0.2),
           width: 1,
         ),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF097004).withOpacity(0.1),
+            color: const Color(0xFF097004).withValues(alpha: 0.1),
             blurRadius: 4,
             offset: const Offset(0, 2),
           ),
@@ -113,32 +111,32 @@ class _KontrolStatusPageState extends State<KontrolStatusPage> {
                     ElevatedButton(
                       onPressed: () {
                         // Show a dialog to confirm the action
-                        showDialog(
-                          context: context,
-                          builder: (context) => AlertDialog(
-                            title: Text('Matikan Lampu?'),
-                            content: Text(
-                              'Apakah Anda yakin ingin mematikan lampu?',
-                            ),
-                            actions: [
-                              TextButton(
-                                onPressed: () => Navigator.of(context).pop(),
-                                child: Text('Batal'),
-                              ),
-                              ElevatedButton(
-                                onPressed: () {
-                                  // Close the dialog
-                                  Navigator.of(context).pop();
-                                  // Show a snackbar to confirm the action
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(content: Text('Lampu dimatikan.')),
-                                  );
-                                },
-                                child: Text('Ya'),
-                              ),
-                            ],
-                          ),
-                        );
+                        // showDialog(
+                        //   context: context,
+                        //   builder: (context) => AlertDialog(
+                        //     title: Text('Matikan Lampu?'),
+                        //     content: Text(
+                        //       'Apakah Anda yakin ingin mematikan lampu?',
+                        //     ),
+                        //     actions: [
+                        //       TextButton(
+                        //         onPressed: () => Navigator.of(context).pop(),
+                        //         child: Text('Batal'),
+                        //       ),
+                        //       ElevatedButton(
+                        //         onPressed: () {
+                        //           // Close the dialog
+                        //           Navigator.of(context).pop();
+                        //           // Show a snackbar to confirm the action
+                        //           ScaffoldMessenger.of(context).showSnackBar(
+                        //             SnackBar(content: Text('Lampu dimatikan.')),
+                        //           );
+                        //         },
+                        //         child: Text('Ya'),
+                        //       ),
+                        //     ],
+                        //   ),
+                        // );
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.primary,

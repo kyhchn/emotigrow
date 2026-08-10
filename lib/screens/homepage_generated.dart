@@ -145,7 +145,7 @@ class _HomepageGeneratedState extends State<HomepageGenerated> {
                 _AppHeader(userName: _userName),
                 Expanded(
                   child: SingleChildScrollView(
-                    padding: const EdgeInsets.fromLTRB(16, 20, 16, 24),
+                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
                     child: Center(
                       child: ConstrainedBox(
                         constraints: const BoxConstraints(maxWidth: 560),

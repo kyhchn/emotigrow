@@ -30,13 +30,11 @@ class ManualAndMenuPage extends StatelessWidget {
             // loop the email from 1 unttil 15 from the images/carouse/number.png
             items: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
                 .map(
-                  (item) => Container(
-                    child: Center(
-                      child: Image.asset(
-                        "assets/images/carousel/$item.png",
-                        fit: BoxFit.contain,
-                        height: height,
-                      ),
+                  (item) => Center(
+                    child: Image.asset(
+                      "assets/images/carousel/$item.png",
+                      fit: BoxFit.contain,
+                      height: height,
                     ),
                   ),
                 )

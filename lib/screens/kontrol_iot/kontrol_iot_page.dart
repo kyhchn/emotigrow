@@ -303,32 +303,6 @@ class _SelectorRow extends StatelessWidget {
   }
 }
 
-class _StatusPill extends StatelessWidget {
-  const _StatusPill({required this.status});
-
-  final _PlantStatus status;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-      decoration: BoxDecoration(
-        color: status.bg,
-        borderRadius: BorderRadius.circular(9999),
-      ),
-      child: Text(
-        status.label,
-        style: TextStyle(
-          color: status.color,
-          fontSize: 10,
-          fontFamily: 'Inter',
-          fontWeight: FontWeight.w700,
-        ),
-      ),
-    );
-  }
-}
-
 class _HealthBar extends StatelessWidget {
   const _HealthBar({required this.value, required this.label});
 

@@ -2,6 +2,81 @@ import 'package:cakmoji_flutter/core/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+// ---------------------------------------------------------------------------
+// Model
+// ---------------------------------------------------------------------------
+
+/// Mood of a diagnosis result. "Happy"/"Normal" → show "Saran Ke Depan";
+/// "Sad" → show "Gejala Utama" and "Dampak Potensial" instead.
+enum _DiagnosisMood {
+  happy('HAPPY', Color(0xFF16A34A), Color(0xFFDCFCE7)),
+  normal('NORMAL', Color(0xFFF59E0B), Color(0xFFFEF3C7)),
+  sad('SAD', Color(0xFFEF4444), Color(0xFFFEE2E2));
+
+  const _DiagnosisMood(this.label, this.color, this.bg);
+
+  final String label;
+  final Color color;
+  final Color bg;
+
+  bool get isGood =>
+      this == _DiagnosisMood.happy || this == _DiagnosisMood.normal;
+}
+
+class _DiagnosisResult {
+  const _DiagnosisResult({
+    required this.name,
+    required this.mood,
+    required this.fotoImage,
+    required this.referensiImage,
+    required this.confident,
+    this.emoticonAsset,
+  });
+
+  final String name;
+  final _DiagnosisMood mood;
+
+  /// The user's plant photo.
+  final String fotoImage;
+
+  /// The reference / comparison image.
+  final String referensiImage;
+
+  /// AI confidence between 0.0 and 1.0 (0.96 → "96% Keyakinan").
+  final double confident;
+
+  /// Small emoticon shown inside the dropdown row.
+  final String? emoticonAsset;
+}
+
+/// Demo diagnosis results — replace with data from your backend.
+const List<_DiagnosisResult> _demoResults = [
+  _DiagnosisResult(
+    name: 'Selada Sehat',
+    mood: _DiagnosisMood.normal,
+    fotoImage: 'assets/images/pakcoy.png',
+    referensiImage: 'assets/images/daftar_kebun.png',
+    confident: 0.96,
+    emoticonAsset: 'assets/images/cakmoji_happy.png',
+  ),
+  _DiagnosisResult(
+    name: 'Pakcoy Terinfeksi',
+    mood: _DiagnosisMood.sad,
+    fotoImage: 'assets/images/flex_your_plant.png',
+    referensiImage: 'assets/images/kontrol_iot_banner_top.png',
+    confident: 0.78,
+    emoticonAsset: 'assets/images/cakmoji_sad.png',
+  ),
+  _DiagnosisResult(
+    name: 'Tomat Sehat',
+    mood: _DiagnosisMood.happy,
+    fotoImage: 'assets/images/kontrol_iot_banner_bot.png',
+    referensiImage: 'assets/images/cakmoji.png',
+    confident: 0.99,
+    emoticonAsset: 'assets/images/cakmoji_happy.png',
+  ),
+];
+
 class AiDiagnosisScreen extends StatefulWidget {
   const AiDiagnosisScreen({super.key});
 
@@ -10,6 +85,8 @@ class AiDiagnosisScreen extends StatefulWidget {
 }
 
 class _AiDiagnosisScreenState extends State<AiDiagnosisScreen> {
+  _DiagnosisResult _selected = _demoResults.first;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,24 +125,34 @@ class _AiDiagnosisScreenState extends State<AiDiagnosisScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(height: 32),
-              // Copy the dropdown from the kontrol_iot_page.dart
+              const SizedBox(height: 24),
+              // Dropdown to switch between diagnosis results — same pattern as
+              // the plant selector on the Kontrol IoT page.
+              _DiagnosisSelector(
+                selected: _selected,
+                onChanged: (result) => setState(() => _selected = result),
+              ),
+              const SizedBox(height: 24),
+              // Foto + referensi images, driven by the selected result.
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  diagnosisImage(context, 'assets/images/lamp.png', false),
-                  diagnosisImage(context, 'assets/images/lamp.png', true),
+                  diagnosisImage(context, _selected.fotoImage, false),
+                  diagnosisImage(context, _selected.referensiImage, true),
                 ],
               ),
-              SizedBox(height: 32),
+              const SizedBox(height: 32),
               plantStatus(),
-              SizedBox(height: 32),
-              goodSuggestion(),
-              SizedBox(height: 32),
-              mainSymptom(),
-              SizedBox(height: 32),
-              mainImpact(),
-              SizedBox(height: 32),
+              const SizedBox(height: 32),
+              // Happy/Normal → "Saran Ke Depan"; Sad → Gejala + Dampak.
+              if (_selected.mood.isGood) ...[
+                goodSuggestion(),
+              ] else ...[
+                const MainSymptomCard(),
+                const SizedBox(height: 32),
+                mainImpact(),
+              ],
+              const SizedBox(height: 32),
             ],
           ),
         ),
@@ -80,10 +167,10 @@ class _AiDiagnosisScreenState extends State<AiDiagnosisScreen> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.withOpacity(0.2), width: 1),
+        border: Border.all(color: Colors.grey.withValues(alpha: 0.2), width: 1),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
+            color: Colors.grey.withValues(alpha: 0.1),
             blurRadius: 4,
             offset: const Offset(0, 2),
           ),
@@ -98,7 +185,7 @@ class _AiDiagnosisScreenState extends State<AiDiagnosisScreen> {
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: Colors.red.withOpacity(0.2),
+                  color: Colors.red.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Icon(
@@ -134,12 +221,15 @@ class _AiDiagnosisScreenState extends State<AiDiagnosisScreen> {
       width: double.infinity,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.primary.withOpacity(0.05),
+        color: AppColors.primary.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.primary.withOpacity(0.2), width: 1),
+        border: Border.all(
+          color: AppColors.primary.withValues(alpha: 0.2),
+          width: 1,
+        ),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
+            color: Colors.grey.withValues(alpha: 0.1),
             blurRadius: 4,
             offset: const Offset(0, 2),
           ),
@@ -155,12 +245,15 @@ class _AiDiagnosisScreenState extends State<AiDiagnosisScreen> {
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: AppColors.primary.withOpacity(0.2),
+                  color: AppColors.primary.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: SvgPicture.asset(
                   'assets/icons/thunder.svg',
-                  color: AppColors.primary,
+                  colorFilter: const ColorFilter.mode(
+                    AppColors.primary,
+                    BlendMode.srcIn,
+                  ),
                   width: 24,
                   height: 24,
                 ),
@@ -287,16 +380,22 @@ class _AiDiagnosisScreenState extends State<AiDiagnosisScreen> {
   }
 
   Container plantStatus() {
+    final confident = _selected.confident;
+    final accuracyLevel = confident >= 0.9
+        ? 'SANGAT TINGGI'
+        : confident >= 0.7
+        ? 'TINGGI'
+        : 'RENDAH';
     return Container(
       padding: const EdgeInsets.all(16),
       width: double.infinity,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.withOpacity(0.2), width: 1),
+        border: Border.all(color: Colors.grey.withValues(alpha: 0.2), width: 1),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
+            color: Colors.grey.withValues(alpha: 0.1),
             blurRadius: 4,
             offset: const Offset(0, 2),
           ),
@@ -308,27 +407,35 @@ class _AiDiagnosisScreenState extends State<AiDiagnosisScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text(
-                'Selada Sehat',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              Flexible(
+                child: Text(
+                  _selected.name,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
-              // Container with 96% keyakinan
+              const SizedBox(width: 8),
+              // Container with % keyakinan
               Container(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 20,
                   vertical: 6,
                 ),
                 decoration: BoxDecoration(
-                  color: AppColors.primary.withOpacity(0.1),
+                  color: AppColors.primary.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(999),
                   border: Border.all(
-                    color: AppColors.primary.withOpacity(0.2),
+                    color: AppColors.primary.withValues(alpha: 0.2),
                     width: 1,
                   ),
                 ),
-                child: const Text(
-                  '96% Keyakinan',
-                  style: TextStyle(
+                child: Text(
+                  '${(confident * 100).round()}% Keyakinan',
+                  style: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.bold,
                     color: AppColors.primary,
@@ -353,7 +460,7 @@ class _AiDiagnosisScreenState extends State<AiDiagnosisScreen> {
                 ),
               ),
               Text(
-                'SANGAT TINGGI',
+                accuracyLevel,
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.bold,
@@ -365,22 +472,10 @@ class _AiDiagnosisScreenState extends State<AiDiagnosisScreen> {
 
           const SizedBox(height: 8),
 
-          // The bar is a container with 100% width and 8 height, with a border radius of 999, and a gradient from red to yellow to green
-          Container(
-            width: double.infinity,
-            height: 8,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(999),
-              gradient: const LinearGradient(
-                colors: [
-                  Color(0xFFEF4444),
-                  Color(0xFFFACC15),
-                  Color(0xFF22C55E),
-                ],
-                stops: [0.0, 0.5, 1.0],
-              ),
-            ),
-          ),
+          // The bar is a container with 100% width and 8 height, with a border
+          // radius of 999, and a gradient from red to yellow to green.
+          // It is reactive: the fill width follows the AI confidence.
+          _ConfidenceBar(confident: confident),
         ],
       ),
     );
@@ -440,8 +535,8 @@ class _AiDiagnosisScreenState extends State<AiDiagnosisScreen> {
   }
 }
 
-class mainSymptom extends StatelessWidget {
-  const mainSymptom({super.key});
+class MainSymptomCard extends StatelessWidget {
+  const MainSymptomCard({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -451,10 +546,10 @@ class mainSymptom extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.withOpacity(0.2), width: 1),
+        border: Border.all(color: Colors.grey.withValues(alpha: 0.2), width: 1),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
+            color: Colors.grey.withValues(alpha: 0.1),
             blurRadius: 4,
             offset: const Offset(0, 2),
           ),
@@ -469,12 +564,15 @@ class mainSymptom extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: Colors.yellow.withOpacity(0.2),
+                  color: Colors.yellow.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: SvgPicture.asset(
                   'assets/icons/eye.svg',
-                  color: Colors.yellow[800],
+                  colorFilter: ColorFilter.mode(
+                    Colors.yellow[800]!,
+                    BlendMode.srcIn,
+                  ),
                   width: 24,
                   height: 24,
                 ),
@@ -498,6 +596,204 @@ class mainSymptom extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+// ---------------------------------------------------------------------------
+// Diagnosis dropdown (same pattern as the Kontrol IoT plant selector)
+// ---------------------------------------------------------------------------
+
+/// Dropdown to switch between diagnosis results.
+///
+/// The **whole container** is the trigger and the menu items reuse the exact
+/// same row layout as the selected value.
+class _DiagnosisSelector extends StatelessWidget {
+  const _DiagnosisSelector({required this.selected, required this.onChanged});
+
+  final _DiagnosisResult selected;
+  final ValueChanged<_DiagnosisResult> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final width = constraints.maxWidth;
+        return Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: AppColors.primary.withValues(alpha: 0.2),
+              width: 1,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withValues(alpha: 0.15),
+                blurRadius: 6,
+                offset: const Offset(0, 2),
+              ),
+            ],
+          ),
+          child: DropdownButtonHideUnderline(
+            // The DropdownButton fills the container, so tapping anywhere on
+            // the bar opens the list.
+            child: DropdownButton<_DiagnosisResult>(
+              value: selected,
+              isExpanded: true,
+              isDense: false,
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              borderRadius: BorderRadius.circular(14),
+              menuWidth: width,
+              dropdownColor: Colors.white,
+              icon: const SizedBox.shrink(),
+              selectedItemBuilder: (context) => [
+                for (final result in _demoResults)
+                  _DiagnosisRow(
+                    result: result,
+                    showChevron: true,
+                    isSelected: result == selected,
+                  ),
+              ],
+              items: [
+                for (final result in _demoResults)
+                  DropdownMenuItem(
+                    value: result,
+                    child: _DiagnosisRow(
+                      result: result,
+                      showChevron: false,
+                      isSelected: result == selected,
+                    ),
+                  ),
+              ],
+              onChanged: (result) {
+                if (result != null) onChanged(result);
+              },
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+/// Shared row used both as the dropdown's selected value and as each menu
+/// item — so the whole list looks identical to the selected value.
+class _DiagnosisRow extends StatelessWidget {
+  const _DiagnosisRow({
+    required this.result,
+    this.showChevron = false,
+    this.isSelected = false,
+  });
+
+  final _DiagnosisResult result;
+  final bool showChevron;
+  final bool isSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          child: Text(
+            result.name,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(
+              color: Colors.black87,
+              fontSize: 15,
+              fontFamily: 'Inter',
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ),
+        ClipRRect(
+          borderRadius: BorderRadius.circular(10),
+          child: result.emoticonAsset != null
+              ? Image.asset(
+                  result.emoticonAsset!,
+                  width: 40,
+                  height: 40,
+                  fit: BoxFit.cover,
+                  errorBuilder: (_, __, ___) => const _EmoticonPlaceholder(),
+                )
+              : const _EmoticonPlaceholder(),
+        ),
+        if (showChevron)
+          const Icon(Icons.keyboard_arrow_down, color: Colors.black54)
+        else if (isSelected)
+          Icon(Icons.check_circle, color: result.mood.color, size: 20),
+      ],
+    );
+  }
+}
+
+class _EmoticonPlaceholder extends StatelessWidget {
+  const _EmoticonPlaceholder();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 40,
+      height: 40,
+      color: const Color(0xFFE9F3E9),
+      child: const Icon(Icons.emoji_emotions, color: Color(0xFF9CAF88)),
+    );
+  }
+}
+// ---------------------------------------------------------------------------
+// Confidence bar (reactive to the AI confidence level)
+// ---------------------------------------------------------------------------
+
+/// A red → yellow → green bar that fills proportionally to [confident]
+/// (0.0 – 1.0) and animates smoothly when the value changes.
+class _ConfidenceBar extends StatelessWidget {
+  const _ConfidenceBar({required this.confident});
+
+  final double confident;
+
+  static const List<Color> _gradient = [
+    Color(0xFFEF4444),
+    Color(0xFFFACC15),
+    Color(0xFF22C55E),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return TweenAnimationBuilder<double>(
+      tween: Tween<double>(begin: 0, end: confident.clamp(0.0, 1.0).toDouble()),
+      duration: const Duration(milliseconds: 700),
+      curve: Curves.easeOutCubic,
+      builder: (context, value, _) {
+        return SizedBox(
+          width: double.infinity,
+          height: 8,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(999),
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                // Track.
+                Container(color: Colors.grey.withValues(alpha: 0.25)),
+                // Fill — width follows the confidence value.
+                FractionallySizedBox(
+                  alignment: Alignment.centerLeft,
+                  widthFactor: value,
+                  child: const DecoratedBox(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.centerLeft,
+                        end: Alignment.centerRight,
+                        colors: _gradient,
+                        stops: [0.0, 0.5, 1.0],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }
