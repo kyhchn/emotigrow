@@ -1,3 +1,5 @@
+import 'package:cakmoji_flutter/core/app_colors.dart';
+import 'package:cakmoji_flutter/screens/kontrol_iot/kontrol_status/kontrol_status_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -52,7 +54,7 @@ class _KontrolIotPageState extends State<KontrolIotPage> {
                           children: [
                             Expanded(
                               child: Image.asset(
-                                'assets/images/ava_blangkon_normal.png',
+                                _selectedPlant.emoticonAssetBig,
                                 fit: BoxFit.contain,
                               ),
                             ),
@@ -77,7 +79,7 @@ class _KontrolIotPageState extends State<KontrolIotPage> {
                         ),
 
                         SizedBox(height: 16),
-                        _AchievementsCard(),
+                        _AchievementsCard(plant: _selectedPlant),
                         SizedBox(height: 20),
                         _SectionTitle(
                           title: 'Lingkungan',
@@ -90,7 +92,7 @@ class _KontrolIotPageState extends State<KontrolIotPage> {
                           title: 'Aktivitas Terakhir',
                           svg: 'assets/icons/history.svg',
                         ),
-                        SizedBox(height: 4),
+                        SizedBox(height: 16),
                         _ActivityTimeline(),
                         SizedBox(
                           height: MediaQuery.of(context).size.height * 0.1,
@@ -137,12 +139,16 @@ class _PlantOption {
     required this.status,
     required this.health,
     required this.imageAsset,
+    required this.emoticonAssetBig,
+    required this.emoticonAssetSmall,
   });
 
   final String name;
   final _PlantStatus status;
   final double health;
   final String imageAsset;
+  final String emoticonAssetBig;
+  final String emoticonAssetSmall;
 }
 
 /// Demo garden plants — replace with data from your backend.
@@ -150,20 +156,26 @@ const List<_PlantOption> _demoPlants = [
   _PlantOption(
     name: 'Pakcoy',
     status: _PlantStatus.sehat,
-    health: 0.8,
+    health: 1,
     imageAsset: 'assets/images/pakcoy.png',
+    emoticonAssetBig: 'assets/images/ava_cakning_happy.png',
+    emoticonAssetSmall: 'assets/images/cakmoji_happy.png',
   ),
   _PlantOption(
     name: 'Selada Keriting',
     status: _PlantStatus.perhatian,
     health: 0.55,
     imageAsset: 'assets/images/flex_your_plant.png',
+    emoticonAssetBig: 'assets/images/ava_blangkon_normal.png',
+    emoticonAssetSmall: 'assets/images/cakmoji_flat.png',
   ),
   _PlantOption(
     name: 'Cabai Rawit',
     status: _PlantStatus.darurat,
     health: 0.3,
     imageAsset: 'assets/images/kontrol_iot_banner_top.png',
+    emoticonAssetBig: 'assets/images/ava_madura_sad.png',
+    emoticonAssetSmall: 'assets/images/cakmoji_sad.png',
   ),
 ];
 
@@ -270,7 +282,7 @@ class _SelectorRow extends StatelessWidget {
         ClipRRect(
           borderRadius: BorderRadius.circular(10),
           child: Image.asset(
-            option.imageAsset,
+            option.emoticonAssetSmall,
             width: 40,
             height: 40,
             fit: BoxFit.cover,
@@ -362,10 +374,13 @@ class _HealthBar extends StatelessWidget {
 
 // -- Achievements card -------------------------------------------------------
 class _AchievementsCard extends StatelessWidget {
-  const _AchievementsCard();
+  const _AchievementsCard({required this.plant});
+
+  final _PlantOption plant;
 
   @override
   Widget build(BuildContext context) {
+    final isReadyToHarvest = plant.health >= 1.0;
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -390,26 +405,41 @@ class _AchievementsCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 12),
-                const _AchievementBullet('1. Pamerkan tanamanmu di sosmed!'),
+                _AchievementBullet(
+                  '1. Pamerkan tanamanmu di sosmed!',
+                  isReadyToHarvest,
+                ),
                 const SizedBox(height: 6),
-                const _AchievementBullet('2. Rawat tanaman hingga 100/100'),
+                _AchievementBullet(
+                  '2. Rawat tanaman hingga 100/100',
+                  isReadyToHarvest,
+                ),
               ],
             ),
           ),
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 6),
+            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 18),
             decoration: BoxDecoration(
-              color: const Color(0xFFE2E8F0),
+              color: isReadyToHarvest
+                  ? AppColors.secondary
+                  : const Color(0xFFE2E8F0),
               borderRadius: BorderRadius.circular(16),
+              boxShadow: const [
+                BoxShadow(
+                  color: Color(0x0C000000),
+                  blurRadius: 2,
+                  offset: Offset(0, 1),
+                ),
+              ],
             ),
-            height: MediaQuery.of(context).size.height * 0.1,
+            // height: MediaQuery.of(context).size.height * 0.1,
             width: MediaQuery.of(context).size.width * 0.3,
             child: Center(
-              child: const Text(
-                '17 Hari lagi panen',
+              child: Text(
+                isReadyToHarvest ? 'JUAL' : '17 Hari lagi panen',
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  color: KontrolIotPage._ink,
+                  color: isReadyToHarvest ? Colors.white : KontrolIotPage._ink,
                   fontSize: 16,
                   fontFamily: 'Inter',
                   fontWeight: FontWeight.w700,
@@ -424,16 +454,15 @@ class _AchievementsCard extends StatelessWidget {
 }
 
 class _AchievementBullet extends StatelessWidget {
-  const _AchievementBullet(this.text);
+  const _AchievementBullet(this.text, this.isReadyToHarvest);
 
   final String text;
+  final bool isReadyToHarvest;
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
-        const Icon(Icons.circle, size: 8, color: Color(0xFFF60404)),
-        const SizedBox(width: 8),
         Expanded(
           child: Text(
             text,
@@ -444,6 +473,12 @@ class _AchievementBullet extends StatelessWidget {
             ),
           ),
         ),
+        Icon(
+          Icons.circle,
+          size: 8,
+          color: isReadyToHarvest ? AppColors.secondary : Colors.red,
+        ),
+        const SizedBox(width: 8),
       ],
     );
   }
@@ -728,10 +763,18 @@ class _ActionButtons extends StatelessWidget {
           label: 'Control Status',
           icon: Icons.tune,
           filled: false,
+          onTap: () {
+            // navigate into KontrolStatusPage with a slide transition from right to left using cupertino style by default not using custom
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => const KontrolStatusPage(),
+              ),
+            );
+          },
         );
         final flex = _Button(
           label: 'Flex Your Plant',
-          icon: Icons.spa_outlined,
+          icon: Icons.photo_camera,
           filled: true,
         );
 
@@ -755,11 +798,14 @@ class _Button extends StatelessWidget {
     required this.label,
     required this.icon,
     required this.filled,
+    this.onTap,
   });
 
   final String label;
   final IconData icon;
   final bool filled;
+  // Custom on tap function that can be added
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -780,7 +826,7 @@ class _Button extends StatelessWidget {
 
     if (!filled) {
       return OutlinedButton.icon(
-        onPressed: () {},
+        onPressed: onTap ?? () {},
         icon: Icon(icon, size: 18, color: KontrolIotPage._ink),
         label: labelWidget,
         style: OutlinedButton.styleFrom(
@@ -792,7 +838,7 @@ class _Button extends StatelessWidget {
       );
     }
     return FilledButton.icon(
-      onPressed: () {},
+      onPressed: onTap ?? () {},
       icon: Icon(icon, size: 18, color: KontrolIotPage._ink),
       label: labelWidget,
       style: FilledButton.styleFrom(

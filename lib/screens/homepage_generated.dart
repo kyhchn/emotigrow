@@ -1,4 +1,7 @@
+import 'package:cakmoji_flutter/screens/ai_diagnosis/ai_diagnosis_transition.dart';
 import 'package:cakmoji_flutter/screens/home/kebunku_page.dart';
+import 'package:cakmoji_flutter/screens/home/manual_and_menu_page.dart';
+import 'package:cakmoji_flutter/screens/home/marketplace_page.dart';
 import 'package:cakmoji_flutter/screens/kontrol_iot/kontrol_iot_transition.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -101,17 +104,39 @@ class _HomepageGeneratedState extends State<HomepageGenerated> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        backgroundColor: AppColors.primary,
-        foregroundColor: Colors.white,
-        elevation: 4,
-        shape: const CircleBorder(),
-        child: SvgPicture.asset(
-          'assets/icons/book.svg',
-          width: 24,
-          height: 24,
-          colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+      floatingActionButton: InkWell(
+        onTap: () {
+          Navigator.of(context).push(
+            PageRouteBuilder<void>(
+              pageBuilder: (_, animation, __) => ManualAndMenuPage(),
+              transitionDuration: const Duration(milliseconds: 800),
+            ),
+          );
+        },
+        child: Container(
+          width: 57,
+          height: 57,
+          decoration: ShapeDecoration(
+            color: const Color(0xBCE6FFEA),
+            shape: RoundedRectangleBorder(
+              side: BorderSide(width: 1, color: const Color(0xDB9DFFA2)),
+              borderRadius: BorderRadius.circular(16),
+            ),
+            shadows: [
+              BoxShadow(
+                color: Color(0xFF4CAE4F),
+                blurRadius: 10.50,
+                offset: Offset(0, 0),
+                spreadRadius: 0,
+              ),
+            ],
+          ),
+          padding: EdgeInsets.all(4),
+          child: SvgPicture.asset(
+            'assets/icons/book.svg',
+            width: 32,
+            height: 32,
+          ),
         ),
       ),
       body: _navIndex == 0
@@ -131,12 +156,21 @@ class _HomepageGeneratedState extends State<HomepageGenerated> {
                 ),
               ],
             )
-          : Column(
+          : _navIndex == 1
+          ? Column(
               children: [
                 _AppHeader(userName: _userName),
                 Expanded(child: KebunkuPage()),
               ],
-            ),
+            )
+          : _navIndex == 2
+          ? Column(
+              children: [
+                _AppHeader(userName: _userName),
+                Expanded(child: MarketplacePage()),
+              ],
+            )
+          : null,
       bottomNavigationBar: AppBottomNav(
         items: [
           BottomNavItem(icon: Icons.home_outlined, label: 'Beranda'),
@@ -325,21 +359,23 @@ class _StatusGrid extends StatelessWidget {
           title: 'Sehat',
           count: 2,
           accent: Color(0xFF22C55E),
-          icon: Icons.health_and_safety_outlined,
+          icon: Icons.check_circle_outline_rounded,
           imagePath: 'assets/images/cakmoji_happy.png',
         ),
         _StatusCard(
           title: 'Waspada',
           count: 0,
           accent: Color(0xFFFFCC00),
-          icon: Icons.warning_amber_rounded,
+          // icon: Icons.warning_amber_rounded,
           imagePath: 'assets/images/cakmoji_flat.png',
+          svgIcon: 'assets/icons/circle_danger.svg',
         ),
         _StatusCard(
           title: 'Darurat',
           count: 0,
           accent: Color(0xFFEF4444),
-          icon: Icons.emergency_outlined,
+          // icon: Icons.emergency_outlined,
+          svgIcon: 'assets/icons/plus_circle.svg',
           imagePath: 'assets/images/cakmoji_sad.png',
         ),
       ],
@@ -352,15 +388,17 @@ class _StatusCard extends StatelessWidget {
     required this.title,
     required this.count,
     required this.accent,
-    required this.icon,
+    this.icon,
+    this.svgIcon,
     required this.imagePath,
   });
 
   final String title;
   final int count;
   final Color accent;
-  final IconData icon;
+  final IconData? icon;
   final String imagePath;
+  final String? svgIcon;
 
   @override
   Widget build(BuildContext context) {
@@ -389,7 +427,14 @@ class _StatusCard extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Icon(icon, color: accent, size: 26),
+                if (icon != null) Icon(icon, color: accent, size: 26),
+                if (svgIcon != null)
+                  SvgPicture.asset(
+                    svgIcon!,
+                    width: 26,
+                    height: 26,
+                    // colorFilter: ColorFilter.mode(accent, BlendMode.srcIn),
+                  ),
                 Image.asset(imagePath, width: 26, height: 26),
               ],
             ),
@@ -587,6 +632,12 @@ class _FeatureRow extends StatelessWidget {
               gradient: const [Color(0xFFE9F9E4), Color(0xFFF6FCF3)],
               title: 'AI Diagnosis',
               subtitle: 'Cek laporan infeksi pada tanaman',
+              onTap: () => Navigator.of(context).push(
+                PageRouteBuilder<void>(
+                  pageBuilder: (_, animation, __) => AiDiagnosisTransition(),
+                  transitionDuration: const Duration(milliseconds: 800),
+                ),
+              ),
             ),
           ),
         ),
