@@ -12,11 +12,16 @@ void main() {
       addTearDown(tester.view.reset);
 
       await tester.pumpWidget(const MaterialApp(home: KontrolIotPage()));
+      await tester.pump();
+
+      // First plant (Selada Keriting) is the default selection. With no live
+      // Firebase data available (test env) it falls back to demo values.
+      expect(find.text('Selada Keriting'), findsOneWidget);
+      expect(find.text('100/100'), findsOneWidget);
 
       // Key sections present.
-      expect(find.text('Pakcoy'), findsOneWidget);
       expect(find.text('ACHIEVEMENTS'), findsOneWidget);
-      expect(find.text('17 Hari lagi panen'), findsOneWidget);
+      expect(find.text('JUAL'), findsOneWidget);
       expect(find.text('Lingkungan'), findsOneWidget);
       expect(find.text('SUHU'), findsWidgets);
       expect(find.text('Aktivitas Terakhir'), findsOneWidget);
@@ -33,13 +38,13 @@ void main() {
       addTearDown(tester.view.reset);
 
       await tester.pumpWidget(const MaterialApp(home: KontrolIotPage()));
+      await tester.pump();
 
-      expect(find.text('Pakcoy'), findsOneWidget);
+      expect(find.text('Selada Keriting'), findsOneWidget);
       expect(tester.takeException(), isNull);
     });
 
-    testWidgets('dropdown opens from the container and menu matches value UI',
-        (tester) async {
+    testWidgets('dropdown switches between the three plants', (tester) async {
       tester.view.physicalSize = const Size(390, 844);
       tester.view.devicePixelRatio = 1.0;
       addTearDown(tester.view.reset);
@@ -47,28 +52,30 @@ void main() {
       await tester.pumpWidget(const MaterialApp(home: KontrolIotPage()));
       await tester.pump();
 
-      // Default plant selected.
-      expect(find.text('Pakcoy'), findsOneWidget);
-      expect(find.text('80/100'), findsOneWidget);
+      // Default plant -> sehat, 100/100.
+      expect(find.text('Selada Keriting'), findsOneWidget);
+      expect(find.text('100/100'), findsOneWidget);
 
-      // The WHOLE container is the trigger: tapping the plant name (not the
-      // chevron) opens the list.
+      // The whole container is the trigger: tapping the plant name opens it.
+      await tester.tap(find.text('Selada Keriting'));
+      await tester.pumpAndSettle();
+
+      // The menu lists the other gardens too.
+      expect(find.text('Pakcoy'), findsWidgets);
+      expect(find.text('Cabai Rawit'), findsOneWidget);
+
+      // Pick Pakcoy -> perhatian, 55/100.
+      await tester.tap(find.text('Pakcoy').last);
+      await tester.pumpAndSettle();
+      expect(find.text('55/100'), findsOneWidget);
+      expect(find.text('17 Hari lagi panen'), findsOneWidget);
+
+      // Pick Cabai Rawit -> darurat, 30/100.
       await tester.tap(find.text('Pakcoy'));
       await tester.pumpAndSettle();
-
-      // The menu items reuse the selected-value UI -> status pills are shown.
-      expect(find.text('Sehat'), findsWidgets);
-      expect(find.text('Perhatian'), findsOneWidget);
-      expect(find.text('Darurat'), findsOneWidget);
-
-      // Pick another plant from the menu.
-      await tester.tap(find.text('Selada Keriting').last);
+      await tester.tap(find.text('Cabai Rawit').last);
       await tester.pumpAndSettle();
-
-      // Selection applied: name + status pill + health value all updated.
-      expect(find.text('Selada Keriting'), findsOneWidget);
-      expect(find.text('Perhatian'), findsOneWidget);
-      expect(find.text('55/100'), findsOneWidget);
+      expect(find.text('30/100'), findsOneWidget);
       expect(tester.takeException(), isNull);
     });
   });
@@ -91,7 +98,7 @@ void main() {
 
       // The next screen is now on top.
       expect(find.byType(KontrolIotPage), findsOneWidget);
-      expect(find.text('Pakcoy'), findsOneWidget);
+      expect(find.text('Selada Keriting'), findsOneWidget);
       expect(tester.takeException(), isNull);
     });
   });

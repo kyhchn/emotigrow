@@ -1,4 +1,5 @@
 import 'package:cakmoji_flutter/core/app_colors.dart';
+import 'package:cakmoji_flutter/screens/kontrol_iot/kontrol_iot_live_data.dart';
 import 'package:cakmoji_flutter/screens/kontrol_iot/kontrol_status/kontrol_status_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -24,6 +25,37 @@ class KontrolIotPage extends StatefulWidget {
 class _KontrolIotPageState extends State<KontrolIotPage> {
   _PlantOption _selectedPlant = _demoPlants.first;
 
+  /// The plant rendered by the UI. Only the first plant (Selada Keriting) is
+  /// driven by the live Firebase data (`devices/device1/live`); the other two
+  /// gardens keep their static demo values until they are wired up too.
+  _PlantOption _effectivePlant(KontrolIotLiveData? live) {
+    if (live == null || _selectedPlant != _demoPlants.first) {
+      print('Live data: ${live?.status}, ${live?.healthValue}');
+      return _selectedPlant;
+    }
+    // print('Live data: ${live.status}, ${live.healthValue}');
+    return _PlantOption(
+      name: _selectedPlant.name,
+      status: switch (live.status) {
+        KontrolIotStatus.sehat => _PlantStatus.sehat,
+        KontrolIotStatus.perhatian => _PlantStatus.perhatian,
+        KontrolIotStatus.darurat => _PlantStatus.darurat,
+      },
+      health: live.healthValue,
+      imageAsset: _selectedPlant.imageAsset,
+      emoticonAssetBig: live.status == KontrolIotStatus.sehat
+          ? 'assets/images/ava_cakning_happy.png'
+          : live.status == KontrolIotStatus.perhatian
+          ? 'assets/images/ava_blangkon_normal.png'
+          : 'assets/images/ava_madura_sad.png',
+      emoticonAssetSmall: live.status == KontrolIotStatus.sehat
+          ? 'assets/images/cakmoji_happy.png'
+          : live.status == KontrolIotStatus.perhatian
+          ? 'assets/images/cakmoji_flat.png'
+          : 'assets/images/cakmoji_sad.png',
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,66 +73,82 @@ class _KontrolIotPageState extends State<KontrolIotPage> {
         child: SizedBox.expand(
           child: Stack(
             children: [
-              SingleChildScrollView(
-                padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
-                child: Center(
-                  child: ConstrainedBox(
-                    constraints: const BoxConstraints(maxWidth: 560),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              // Live IoT data (`devices/device1/live`) only drives the first
+              // plant (Selada Keriting); all parsing lives in
+              // kontrol_iot_live_data.dart so this screen stays small.
+              StreamBuilder<KontrolIotLiveData?>(
+                stream: watchKontrolIotLiveData(),
+                builder: (context, snapshot) {
+                  print(
+                    'KontrolIotPage: live data snapshot: ${snapshot.data?.status.toString()}, ${snapshot.data?.healthValue}',
+                  );
+                  final live = snapshot.data;
+                  final plant = _effectivePlant(live);
+                  print(
+                    'KontrolIotPage: effective plant: ${plant.name}, ${plant.status.label}, ${plant.health}, ${plant.emoticonAssetBig}, ${plant.emoticonAssetSmall}',
+                  );
+                  return SingleChildScrollView(
+                    padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
+                    child: Center(
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints(maxWidth: 560),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
-                            Expanded(
-                              child: Image.asset(
-                                _selectedPlant.emoticonAssetBig,
-                                fit: BoxFit.contain,
-                              ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
+                                  child: Image.asset(
+                                    plant.emoticonAssetBig,
+                                    fit: BoxFit.contain,
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: Image.asset(
+                                    plant.imageAsset,
+                                    fit: BoxFit.contain,
+                                  ),
+                                ),
+                              ],
                             ),
-                            const SizedBox(width: 8),
-                            Expanded(
-                              child: Image.asset(
-                                _selectedPlant.imageAsset,
-                                fit: BoxFit.contain,
-                              ),
+                            _HealthBar(
+                              value: plant.health,
+                              label: '${(plant.health * 100).round()}/100',
+                            ),
+                            const SizedBox(height: 16),
+                            _PlantSelector(
+                              selected: plant,
+                              onChanged: (selection) =>
+                                  setState(() => _selectedPlant = selection),
+                            ),
+
+                            SizedBox(height: 16),
+                            _AchievementsCard(plant: plant),
+                            SizedBox(height: 20),
+                            _SectionTitle(
+                              title: 'Lingkungan',
+                              svg: 'assets/icons/hotspot.svg',
+                            ),
+                            SizedBox(height: 12),
+                            _MetricsGrid(live: live),
+                            SizedBox(height: 20),
+                            _SectionTitle(
+                              title: 'Aktivitas Terakhir',
+                              svg: 'assets/icons/history.svg',
+                            ),
+                            SizedBox(height: 16),
+                            _ActivityTimeline(),
+                            SizedBox(
+                              height: MediaQuery.of(context).size.height * 0.1,
                             ),
                           ],
                         ),
-                        _HealthBar(
-                          value: _selectedPlant.health,
-                          label: '${(_selectedPlant.health * 100).round()}/100',
-                        ),
-                        const SizedBox(height: 16),
-                        _PlantSelector(
-                          selected: _selectedPlant,
-                          onChanged: (plant) =>
-                              setState(() => _selectedPlant = plant),
-                        ),
-
-                        SizedBox(height: 16),
-                        _AchievementsCard(plant: _selectedPlant),
-                        SizedBox(height: 20),
-                        _SectionTitle(
-                          title: 'Lingkungan',
-                          svg: 'assets/icons/hotspot.svg',
-                        ),
-                        SizedBox(height: 12),
-                        _MetricsGrid(),
-                        SizedBox(height: 20),
-                        _SectionTitle(
-                          title: 'Aktivitas Terakhir',
-                          svg: 'assets/icons/history.svg',
-                        ),
-                        SizedBox(height: 16),
-                        _ActivityTimeline(),
-                        SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.1,
-                        ),
-                      ],
+                      ),
                     ),
-                  ),
-                ),
+                  );
+                },
               ),
               Positioned(
                 bottom: 0,
@@ -154,7 +202,7 @@ class _PlantOption {
 /// Demo garden plants — replace with data from your backend.
 const List<_PlantOption> _demoPlants = [
   _PlantOption(
-    name: 'Pakcoy',
+    name: 'Selada Keriting',
     status: _PlantStatus.sehat,
     health: 1,
     imageAsset: 'assets/images/pakcoy.png',
@@ -162,7 +210,7 @@ const List<_PlantOption> _demoPlants = [
     emoticonAssetSmall: 'assets/images/cakmoji_happy.png',
   ),
   _PlantOption(
-    name: 'Selada Keriting',
+    name: 'Pakcoy',
     status: _PlantStatus.perhatian,
     health: 0.55,
     imageAsset: 'assets/images/flex_your_plant.png',
@@ -494,7 +542,10 @@ class _SectionTitle extends StatelessWidget {
 
 // -- Environment metrics (responsive grid) -----------------------------------
 class _MetricsGrid extends StatelessWidget {
-  const _MetricsGrid();
+  const _MetricsGrid({this.live});
+
+  /// Live IoT readings; `null` keeps the static demo values on screen.
+  final KontrolIotLiveData? live;
 
   @override
   Widget build(BuildContext context) {
@@ -509,30 +560,30 @@ class _MetricsGrid extends StatelessWidget {
           mainAxisSpacing: 10,
           crossAxisSpacing: 10,
           childAspectRatio: aspect,
-          children: const [
+          children: [
             _MetricCard(
               svg: 'assets/icons/suhu.svg',
               icon: Icons.thermostat,
               label: 'SUHU',
-              value: '24°C',
+              value: live?.tempLabel ?? '24°C',
             ),
             _MetricCard(
               svg: 'assets/icons/cahaya.svg',
               icon: Icons.wb_sunny_outlined,
               label: 'CAHAYA',
-              value: '60%',
+              value: live?.luxLabel ?? '60%',
             ),
             _MetricCard(
               svg: 'assets/icons/ph.svg',
               icon: Icons.science_outlined,
               label: 'PH',
-              value: '6.5',
+              value: live?.phLabel ?? '6.5',
             ),
             _MetricCard(
               svg: 'assets/icons/ec.svg',
               icon: Icons.waves,
               label: 'EC',
-              value: '700',
+              value: live?.ecLabel ?? '700',
             ),
           ],
         );
