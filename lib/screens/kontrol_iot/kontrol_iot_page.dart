@@ -30,31 +30,52 @@ class _KontrolIotPageState extends State<KontrolIotPage> {
   /// gardens keep their static demo values until they are wired up too.
   _PlantOption _effectivePlant(KontrolIotLiveData? live) {
     if (live == null || _selectedPlant != _demoPlants.first) {
-      print('Live data: ${live?.status}, ${live?.healthValue}');
       return _selectedPlant;
     }
-    // print('Live data: ${live.status}, ${live.healthValue}');
+    return _liveTwin(live);
+  }
+
+  /// Live-driven twin of the first demo plant: status, health score and the
+  /// matching Cakmoji emoticon all follow the current `final_output`.
+  _PlantOption _liveTwin(KontrolIotLiveData live) {
     return _PlantOption(
-      name: _selectedPlant.name,
-      status: switch (live.status) {
-        KontrolIotStatus.sehat => _PlantStatus.sehat,
-        KontrolIotStatus.perhatian => _PlantStatus.perhatian,
-        KontrolIotStatus.darurat => _PlantStatus.darurat,
-      },
+      name: _demoPlants.first.name,
+      status: _statusOf(live.status),
       health: live.healthValue,
-      imageAsset: _selectedPlant.imageAsset,
-      emoticonAssetBig: live.status == KontrolIotStatus.sehat
-          ? 'assets/images/ava_cakning_happy.png'
-          : live.status == KontrolIotStatus.perhatian
-          ? 'assets/images/ava_blangkon_normal.png'
-          : 'assets/images/ava_madura_sad.png',
-      emoticonAssetSmall: live.status == KontrolIotStatus.sehat
-          ? 'assets/images/cakmoji_happy.png'
-          : live.status == KontrolIotStatus.perhatian
-          ? 'assets/images/cakmoji_flat.png'
-          : 'assets/images/cakmoji_sad.png',
+      imageAsset: _demoPlants.first.imageAsset,
+      emoticonAssetBig: _emoticonBig(live.status),
+      emoticonAssetSmall: _emoticonSmall(live.status),
     );
   }
+
+  /// Options rendered by the plant selector, in the same order as
+  /// [_demoPlants]: the first entry reflects live data, the rest stay demo.
+  List<_PlantOption> _selectorOptions(KontrolIotLiveData? live) => [
+    if (live != null) _liveTwin(live) else _demoPlants.first,
+    _demoPlants[1],
+    _demoPlants[2],
+  ];
+
+  _PlantStatus _statusOf(KontrolIotStatus status) => switch (status) {
+    KontrolIotStatus.sehat => _PlantStatus.sehat,
+    KontrolIotStatus.perhatian => _PlantStatus.perhatian,
+    KontrolIotStatus.darurat => _PlantStatus.darurat,
+  };
+
+  /// Avatar that matches a live health level (same expressions as the demo
+  /// plants: happy → normal → sad).
+  String _emoticonBig(KontrolIotStatus status) => switch (status) {
+    KontrolIotStatus.sehat => 'assets/images/ava_cakning_happy.png',
+    KontrolIotStatus.perhatian => 'assets/images/ava_blangkon_normal.png',
+    KontrolIotStatus.darurat => 'assets/images/ava_madura_sad.png',
+  };
+
+  /// Dropdown thumbnail that matches a live health level.
+  String _emoticonSmall(KontrolIotStatus status) => switch (status) {
+    KontrolIotStatus.sehat => 'assets/images/cakmoji_happy.png',
+    KontrolIotStatus.perhatian => 'assets/images/cakmoji_flat.png',
+    KontrolIotStatus.darurat => 'assets/images/cakmoji_sad.png',
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -79,14 +100,8 @@ class _KontrolIotPageState extends State<KontrolIotPage> {
               StreamBuilder<KontrolIotLiveData?>(
                 stream: watchKontrolIotLiveData(),
                 builder: (context, snapshot) {
-                  print(
-                    'KontrolIotPage: live data snapshot: ${snapshot.data?.status.toString()}, ${snapshot.data?.healthValue}',
-                  );
                   final live = snapshot.data;
                   final plant = _effectivePlant(live);
-                  print(
-                    'KontrolIotPage: effective plant: ${plant.name}, ${plant.status.label}, ${plant.health}, ${plant.emoticonAssetBig}, ${plant.emoticonAssetSmall}',
-                  );
                   return SingleChildScrollView(
                     padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
                     child: Center(
@@ -119,7 +134,13 @@ class _KontrolIotPageState extends State<KontrolIotPage> {
                             ),
                             const SizedBox(height: 16),
                             _PlantSelector(
-                              selected: plant,
+                              // `value` stays one of the canonical demo
+                              // instances (DropdownButton requires it to be
+                              // exactly one of its items); the live-driven
+                              // variant is only used for *rendering* via
+                              // `options`.
+                              selected: _selectedPlant,
+                              options: _selectorOptions(live),
                               onChanged: (selection) =>
                                   setState(() => _selectedPlant = selection),
                             ),
@@ -205,7 +226,7 @@ const List<_PlantOption> _demoPlants = [
     name: 'Selada Keriting',
     status: _PlantStatus.sehat,
     health: 1,
-    imageAsset: 'assets/images/pakcoy.png',
+    imageAsset: 'assets/images/selada.png',
     emoticonAssetBig: 'assets/images/ava_cakning_happy.png',
     emoticonAssetSmall: 'assets/images/cakmoji_happy.png',
   ),
@@ -213,7 +234,7 @@ const List<_PlantOption> _demoPlants = [
     name: 'Pakcoy',
     status: _PlantStatus.perhatian,
     health: 0.55,
-    imageAsset: 'assets/images/flex_your_plant.png',
+    imageAsset: 'assets/images/pakcoy.png',
     emoticonAssetBig: 'assets/images/ava_blangkon_normal.png',
     emoticonAssetSmall: 'assets/images/cakmoji_flat.png',
   ),
@@ -221,7 +242,7 @@ const List<_PlantOption> _demoPlants = [
     name: 'Cabai Rawit',
     status: _PlantStatus.darurat,
     health: 0.3,
-    imageAsset: 'assets/images/kontrol_iot_banner_top.png',
+    imageAsset: 'assets/images/cabai.png',
     emoticonAssetBig: 'assets/images/ava_madura_sad.png',
     emoticonAssetSmall: 'assets/images/cakmoji_sad.png',
   ),
@@ -233,10 +254,21 @@ const List<_PlantOption> _demoPlants = [
 /// The **whole container** is the dropdown trigger, and the menu items reuse
 /// the exact same row layout as the selected value (thumbnail + name + status).
 class _PlantSelector extends StatelessWidget {
-  const _PlantSelector({required this.selected, required this.onChanged});
+  const _PlantSelector({
+    required this.selected,
+    required this.onChanged,
+    required this.options,
+  });
 
+  /// Currently selected garden — must stay one of the [_demoPlants] instances
+  /// so the DropdownButton `value` always matches exactly one item.
   final _PlantOption selected;
   final ValueChanged<_PlantOption> onChanged;
+
+  /// Rendered variants in the same order as [_demoPlants]: the first entry is
+  /// the live-driven twin of Selada Keriting when live data is available, and
+  /// the rest are the demo originals.
+  final List<_PlantOption> options;
 
   @override
   Widget build(BuildContext context) {
@@ -262,21 +294,24 @@ class _PlantSelector extends StatelessWidget {
               dropdownColor: Colors.white,
               icon: const SizedBox.shrink(),
               selectedItemBuilder: (context) => [
-                for (final plant in _demoPlants)
+                for (var i = 0; i < _demoPlants.length; i++)
                   _SelectorRow(
-                    option: plant,
+                    option: options[i],
                     showChevron: true,
-                    isSelected: plant == selected,
+                    isSelected: _demoPlants[i] == selected,
                   ),
               ],
               items: [
-                for (final plant in _demoPlants)
+                for (var i = 0; i < _demoPlants.length; i++)
                   DropdownMenuItem(
-                    value: plant,
+                    // Values stay the canonical demo instances so the widget
+                    // assertion "value must be exactly one item" always holds,
+                    // even when the *displayed* option is a live-driven twin.
+                    value: _demoPlants[i],
                     child: _SelectorRow(
-                      option: plant,
+                      option: options[i],
                       showChevron: false,
-                      isSelected: plant == selected,
+                      isSelected: _demoPlants[i] == selected,
                     ),
                   ),
               ],

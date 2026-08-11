@@ -1,4 +1,5 @@
 import 'package:cakmoji_flutter/core/app_colors.dart';
+import 'package:cakmoji_flutter/screens/ai_diagnosis/ai_diagnosis_live_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -30,6 +31,7 @@ class _DiagnosisResult {
     required this.fotoImage,
     required this.referensiImage,
     required this.confident,
+    this.diseaseName,
     this.emoticonAsset,
   });
 
@@ -45,6 +47,8 @@ class _DiagnosisResult {
   /// AI confidence between 0.0 and 1.0 (0.96 → "96% Keyakinan").
   final double confident;
 
+  final String? diseaseName;
+
   /// Small emoticon shown inside the dropdown row.
   final String? emoticonAsset;
 }
@@ -52,27 +56,30 @@ class _DiagnosisResult {
 /// Demo diagnosis results — replace with data from your backend.
 const List<_DiagnosisResult> _demoResults = [
   _DiagnosisResult(
-    name: 'Selada Sehat',
+    name: 'Selada Keriting',
     mood: _DiagnosisMood.normal,
-    fotoImage: 'assets/images/pakcoy.png',
-    referensiImage: 'assets/images/daftar_kebun.png',
+    diseaseName: 'Selada Sehat',
+    fotoImage: 'assets/images/ai_selada_own.png',
+    referensiImage: 'assets/images/ai_selada_reference.png',
     confident: 0.96,
     emoticonAsset: 'assets/images/cakmoji_happy.png',
   ),
   _DiagnosisResult(
-    name: 'Pakcoy Terinfeksi',
+    name: 'Pakcoy',
     mood: _DiagnosisMood.sad,
-    fotoImage: 'assets/images/flex_your_plant.png',
+    fotoImage: 'assets/images/pakcoy.png',
+    diseaseName: 'Pakcoy Terinfeksi',
     referensiImage: 'assets/images/kontrol_iot_banner_top.png',
     confident: 0.78,
     emoticonAsset: 'assets/images/cakmoji_sad.png',
   ),
   _DiagnosisResult(
-    name: 'Tomat Sehat',
+    name: 'Tomat',
     mood: _DiagnosisMood.happy,
-    fotoImage: 'assets/images/kontrol_iot_banner_bot.png',
+    fotoImage: 'assets/images/tomat.png',
     referensiImage: 'assets/images/cakmoji.png',
     confident: 0.99,
+    diseaseName: 'Tomat Sehat',
     emoticonAsset: 'assets/images/cakmoji_happy.png',
   ),
 ];
@@ -86,6 +93,42 @@ class AiDiagnosisScreen extends StatefulWidget {
 
 class _AiDiagnosisScreenState extends State<AiDiagnosisScreen> {
   _DiagnosisResult _selected = _demoResults.first;
+
+  /// Live-driven twin of the first demo result (Selada Sehat): the confidence
+  /// comes from `plant_readings/pi3b-02/latest` and the Referensi image from
+  /// Supabase Storage (`disease-references/diagnosis.jpg`).
+  _DiagnosisResult _liveResult(LatestPlantReading reading) {
+    return _DiagnosisResult(
+      name: _demoResults.first.name,
+      mood: _demoResults.first.mood,
+      fotoImage: _demoResults.first.fotoImage,
+      referensiImage: LatestPlantReading.diagnosisReferenceImageUrlFor(
+        reading.diagnosis,
+      ),
+      confident: reading.confidence,
+      emoticonAsset: _demoResults.first.emoticonAsset,
+      diseaseName: _selected.diseaseName ?? _demoResults.first.diseaseName,
+    );
+  }
+
+  /// The result rendered by the UI. Only the first result (Selada Sehat) is
+  /// driven by the live reading; the other two keep their demo data.
+  _DiagnosisResult _effectiveResult(LatestPlantReading? reading) {
+    if (reading == null || _selected != _demoResults.first) {
+      return _selected;
+    }
+    return _liveResult(reading);
+  }
+
+  /// Options rendered by the diagnosis selector, in the same order as
+  /// [_demoResults]: the first entry reflects the live reading, the rest stay
+  /// demo. Values themselves remain the canonical [_demoResults] instances so
+  /// the DropdownButton `value` always matches exactly one item.
+  List<_DiagnosisResult> _selectorOptions(LatestPlantReading? reading) => [
+    if (reading != null) _liveResult(reading) else _demoResults.first,
+    _demoResults[1],
+    _demoResults[2],
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -121,40 +164,50 @@ class _AiDiagnosisScreenState extends State<AiDiagnosisScreen> {
 
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 24),
-              // Dropdown to switch between diagnosis results — same pattern as
-              // the plant selector on the Kontrol IoT page.
-              _DiagnosisSelector(
-                selected: _selected,
-                onChanged: (result) => setState(() => _selected = result),
-              ),
-              const SizedBox(height: 24),
-              // Foto + referensi images, driven by the selected result.
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        child: StreamBuilder<LatestPlantReading?>(
+          stream: watchLatestPlantReading(),
+          builder: (context, snapshot) {
+            final reading = snapshot.data;
+            final result = _effectiveResult(reading);
+            print('AiDiagnosisScreen.build: reading=$reading, result=$result');
+            return SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  diagnosisImage(context, _selected.fotoImage, false),
-                  diagnosisImage(context, _selected.referensiImage, true),
+                  const SizedBox(height: 24),
+                  // Dropdown to switch between diagnosis results — same pattern
+                  // as the plant selector on the Kontrol IoT page.
+                  _DiagnosisSelector(
+                    selected: _selected,
+                    options: _selectorOptions(reading),
+                    onChanged: (selection) =>
+                        setState(() => _selected = selection),
+                  ),
+                  const SizedBox(height: 24),
+                  // Foto + referensi images, driven by the selected result.
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      diagnosisImage(context, result.fotoImage, false),
+                      diagnosisImage(context, result.referensiImage, true),
+                    ],
+                  ),
+                  const SizedBox(height: 32),
+                  plantStatus(result),
+                  const SizedBox(height: 32),
+                  // Happy/Normal → "Saran Ke Depan"; Sad → Gejala + Dampak.
+                  if (result.mood.isGood) ...[
+                    goodSuggestion(),
+                  ] else ...[
+                    const MainSymptomCard(),
+                    const SizedBox(height: 32),
+                    mainImpact(),
+                  ],
+                  const SizedBox(height: 32),
                 ],
               ),
-              const SizedBox(height: 32),
-              plantStatus(),
-              const SizedBox(height: 32),
-              // Happy/Normal → "Saran Ke Depan"; Sad → Gejala + Dampak.
-              if (_selected.mood.isGood) ...[
-                goodSuggestion(),
-              ] else ...[
-                const MainSymptomCard(),
-                const SizedBox(height: 32),
-                mainImpact(),
-              ],
-              const SizedBox(height: 32),
-            ],
-          ),
+            );
+          },
         ),
       ),
     );
@@ -379,8 +432,8 @@ class _AiDiagnosisScreenState extends State<AiDiagnosisScreen> {
     );
   }
 
-  Container plantStatus() {
-    final confident = _selected.confident;
+  Container plantStatus(_DiagnosisResult result) {
+    final confident = result.confident;
     final accuracyLevel = confident >= 0.9
         ? 'SANGAT TINGGI'
         : confident >= 0.7
@@ -409,7 +462,7 @@ class _AiDiagnosisScreenState extends State<AiDiagnosisScreen> {
             children: [
               Flexible(
                 child: Text(
-                  _selected.name,
+                  result.diseaseName ?? 'Nama Penyakit Tidak Diketahui',
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
@@ -451,16 +504,22 @@ class _AiDiagnosisScreenState extends State<AiDiagnosisScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                'TINGKAT KEAKURATAN AI',
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.grey.shade600,
+              Flexible(
+                child: Text(
+                  'TINGKAT KEAKURATAN AI',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.grey.shade600,
+                  ),
                 ),
               ),
+              const SizedBox(width: 8),
               Text(
                 accuracyLevel,
+                maxLines: 1,
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.bold,
@@ -486,6 +545,7 @@ class _AiDiagnosisScreenState extends State<AiDiagnosisScreen> {
     String imagePath,
     bool isReference,
   ) {
+    print('diagnosisImage: $imagePath, isReference: $isReference');
     return SizedBox(
       width: MediaQuery.of(context).size.width * 0.45,
       height: MediaQuery.of(context).size.width * 0.45,
@@ -501,7 +561,16 @@ class _AiDiagnosisScreenState extends State<AiDiagnosisScreen> {
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(12),
-              child: Image.asset(imagePath, fit: BoxFit.cover),
+              child: imagePath.startsWith('http')
+                  ? Image.network(
+                      imagePath,
+                      fit: BoxFit.cover,
+                      // errorBuilder: (_, __, ___) => Image.asset(
+                      //   'assets/images/daftar_kebun.png',
+                      //   fit: BoxFit.cover,
+                      // ),
+                    )
+                  : Image.asset(imagePath, fit: BoxFit.cover),
             ),
           ),
           Positioned(
@@ -608,10 +677,21 @@ class MainSymptomCard extends StatelessWidget {
 /// The **whole container** is the trigger and the menu items reuse the exact
 /// same row layout as the selected value.
 class _DiagnosisSelector extends StatelessWidget {
-  const _DiagnosisSelector({required this.selected, required this.onChanged});
+  const _DiagnosisSelector({
+    required this.selected,
+    required this.onChanged,
+    required this.options,
+  });
 
+  /// Currently selected result — must stay one of the [_demoResults] instances
+  /// so the DropdownButton `value` always matches exactly one item.
   final _DiagnosisResult selected;
   final ValueChanged<_DiagnosisResult> onChanged;
+
+  /// Rendered variants in the same order as [_demoResults]: the first entry is
+  /// the live-driven twin of Selada Sehat when a reading is available, and the
+  /// rest are the demo originals.
+  final List<_DiagnosisResult> options;
 
   @override
   Widget build(BuildContext context) {
@@ -647,21 +727,24 @@ class _DiagnosisSelector extends StatelessWidget {
               dropdownColor: Colors.white,
               icon: const SizedBox.shrink(),
               selectedItemBuilder: (context) => [
-                for (final result in _demoResults)
+                for (var i = 0; i < _demoResults.length; i++)
                   _DiagnosisRow(
-                    result: result,
+                    result: options[i],
                     showChevron: true,
-                    isSelected: result == selected,
+                    isSelected: _demoResults[i] == selected,
                   ),
               ],
               items: [
-                for (final result in _demoResults)
+                for (var i = 0; i < _demoResults.length; i++)
                   DropdownMenuItem(
-                    value: result,
+                    // Values stay the canonical demo instances so the widget
+                    // assertion "value must be exactly one item" always holds,
+                    // even when the *displayed* option is a live-driven twin.
+                    value: _demoResults[i],
                     child: _DiagnosisRow(
-                      result: result,
+                      result: options[i],
                       showChevron: false,
-                      isSelected: result == selected,
+                      isSelected: _demoResults[i] == selected,
                     ),
                   ),
               ],

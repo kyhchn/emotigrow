@@ -13,6 +13,8 @@
 /// - `sensors.temp` → suhu
 /// - `sensors.lux` → cahaya (shown as a percentage)
 /// - every number is rounded to one decimal place
+library;
+
 import 'package:firebase_database/firebase_database.dart';
 
 import '../../services/firebase_rtdb_service.dart';

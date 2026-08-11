@@ -7,13 +7,53 @@ class MarketplacePage extends StatefulWidget {
   State<MarketplacePage> createState() => _MarketplacePageState();
 }
 
+class MarketplaceItem {
+  final String name;
+  final String location;
+  final String price;
+  final String imageAsset;
+
+  MarketplaceItem({
+    required this.name,
+    required this.location,
+    required this.price,
+    required this.imageAsset,
+  });
+}
+
 class _MarketplacePageState extends State<MarketplacePage> {
+  final List<MarketplaceItem> items = [
+    MarketplaceItem(
+      name: 'Selada Keriting',
+      location: 'Kab. Sidoarjo',
+      price: 'Rp 5.000 / kg',
+      imageAsset: 'assets/images/selada_keriting.png',
+    ),
+    MarketplaceItem(
+      name: 'Alat Monitoring Hidroponik CakMoji',
+      location: 'Karanganyar',
+      price: 'Rp 1.380.000',
+      imageAsset: 'assets/images/alat_hidroponik.png',
+    ),
+    MarketplaceItem(
+      name: 'Insektisida Teballo 250SL ',
+      location: 'Karanganyar',
+      price: 'Rp 75.000 / kg',
+      imageAsset: 'assets/images/teballo.png',
+    ),
+    MarketplaceItem(
+      name: 'pH Buffer ACR 1 Set 250ml',
+      location: 'Surabaya',
+      price: 'Rp 50.000 / kg',
+      imageAsset: 'assets/images/ph_buffer.png',
+    ),
+  ];
   @override
   Widget build(BuildContext context) {
     return ListView(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       children: List.generate(
-        20,
+        items.length,
         (index) => Padding(
           padding: EdgeInsets.only(bottom: 16, top: index == 0 ? 16 : 0),
           child: Container(
@@ -38,8 +78,8 @@ class _MarketplacePageState extends State<MarketplacePage> {
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(12),
-                    image: const DecorationImage(
-                      image: AssetImage('assets/images/lamp.png'),
+                    image: DecorationImage(
+                      image: AssetImage(items[index].imageAsset),
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -50,7 +90,7 @@ class _MarketplacePageState extends State<MarketplacePage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'SELADA KERITING',
+                        items[index].name,
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
@@ -66,14 +106,14 @@ class _MarketplacePageState extends State<MarketplacePage> {
                           ),
                           SizedBox(width: 4),
                           Text(
-                            'Kab. Sidoarjo',
+                            items[index].location,
                             style: TextStyle(color: Colors.grey, fontSize: 14),
                           ),
                         ],
                       ),
                       SizedBox(height: 12),
                       Text(
-                        'Rp 5.000 / kg',
+                        items[index].price,
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.bold,

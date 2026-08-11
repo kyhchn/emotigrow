@@ -8,7 +8,63 @@ class KontrolStatusPage extends StatefulWidget {
   State<KontrolStatusPage> createState() => _KontrolStatusPageState();
 }
 
+class KontrolStatusItem {
+  final String name;
+  final String place;
+  final String asset;
+  final String month;
+
+  KontrolStatusItem({
+    required this.name,
+    required this.place,
+    required this.asset,
+    required this.month,
+  });
+}
+
 class _KontrolStatusPageState extends State<KontrolStatusPage> {
+  final List<KontrolStatusItem> items = [
+    KontrolStatusItem(
+      name: 'Selada',
+      place: 'Dataran tinggi',
+      asset: 'assets/images/selada.png',
+      month: '1 bulan',
+    ),
+    KontrolStatusItem(
+      name: 'Pakcoy',
+      place: 'Dataran tinggi/rendah',
+      asset: 'assets/images/pakcoy.png',
+      month: '1 bulan',
+    ),
+    KontrolStatusItem(
+      name: 'Cabai',
+      place: 'Lahan terbuka',
+      asset: 'assets/images/cabai.png',
+      month: '2 bulan',
+    ),
+    KontrolStatusItem(
+      name: 'Tomat',
+      place: 'Dataran tinggi',
+      asset: 'assets/images/tomat.png',
+      month: '1 bulan',
+    ),
+    KontrolStatusItem(
+      name: 'Kangkung',
+      place: 'Dataran tinggi/rendah',
+      asset: 'assets/images/kangkung.png',
+      month: '3 bulan',
+    ),
+    KontrolStatusItem(
+      name: 'Bayam',
+      place: 'Dataran tinggi',
+      asset: 'assets/images/bayam.png',
+      month: '2 bulan',
+    ),
+
+    //tomat
+    //kangkung
+    //bayam
+  ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,10 +84,10 @@ class _KontrolStatusPageState extends State<KontrolStatusPage> {
         child: ListView(
           //generate for 20 items
           children: List.generate(
-            20,
+            items.length,
             (index) => Padding(
               padding: const EdgeInsets.only(bottom: 16),
-              child: controlStatusCard(context),
+              child: controlStatusCard(context, items[index % items.length]),
             ),
           ),
         ),
@@ -39,7 +95,7 @@ class _KontrolStatusPageState extends State<KontrolStatusPage> {
     );
   }
 
-  Container controlStatusCard(BuildContext context) {
+  Container controlStatusCard(BuildContext context, KontrolStatusItem item) {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
@@ -61,7 +117,7 @@ class _KontrolStatusPageState extends State<KontrolStatusPage> {
       child: Row(
         children: [
           Image.asset(
-            'assets/images/lamp.png',
+            item.asset,
             height: MediaQuery.of(context).size.height * 0.1,
             // aspect ratio 1:1
             fit: BoxFit.contain,
@@ -78,11 +134,11 @@ class _KontrolStatusPageState extends State<KontrolStatusPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  'Lampu',
+                  item.name,
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 Text(
-                  'Dataran tinggi',
+                  item.place,
                   style: TextStyle(fontSize: 16, color: Colors.green),
                 ),
                 Row(
@@ -99,7 +155,7 @@ class _KontrolStatusPageState extends State<KontrolStatusPage> {
                         borderRadius: BorderRadius.circular(4),
                       ),
                       child: Text(
-                        '1 bulan',
+                        item.month,
                         style: TextStyle(
                           fontSize: 14,
                           color: Colors.grey.shade800,
