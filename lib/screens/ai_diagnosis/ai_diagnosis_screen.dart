@@ -62,7 +62,7 @@ const List<_DiagnosisResult> _demoResults = [
     fotoImage: 'assets/images/ai_selada_own.png',
     referensiImage: 'assets/images/ai_selada_reference.png',
     confident: 0.96,
-    emoticonAsset: 'assets/images/cakmoji_happy.png',
+    emoticonAsset: 'assets/images/opsi_happy.png',
   ),
   _DiagnosisResult(
     name: 'Pakcoy',
@@ -71,7 +71,7 @@ const List<_DiagnosisResult> _demoResults = [
     diseaseName: 'Pakcoy Terinfeksi',
     referensiImage: 'assets/images/kontrol_iot_banner_top.png',
     confident: 0.78,
-    emoticonAsset: 'assets/images/cakmoji_sad.png',
+    emoticonAsset: 'assets/images/opsi_sad.png',
   ),
   _DiagnosisResult(
     name: 'Tomat',
@@ -80,7 +80,7 @@ const List<_DiagnosisResult> _demoResults = [
     referensiImage: 'assets/images/cakmoji.png',
     confident: 0.99,
     diseaseName: 'Tomat Sehat',
-    emoticonAsset: 'assets/images/cakmoji_happy.png',
+    emoticonAsset: 'assets/images/opsi_happy.png',
   ),
 ];
 

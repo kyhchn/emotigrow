@@ -17,7 +17,7 @@ enum PlantStatus {
   sehat(
     label: 'Sehat',
     badge: 'SEHAT',
-    assetIcon: 'assets/images/cakmoji_happy.png',
+    assetIcon: 'assets/images/opsi_happy.png',
     color: Color(0xFF22C55E),
     badgeTextColor: Color(0xFF15803D),
     badgeBgColor: Color(0xFFDCFCE7),
@@ -26,7 +26,7 @@ enum PlantStatus {
   perhatian(
     label: 'Perhatian',
     badge: 'PERHATIAN',
-    assetIcon: 'assets/images/cakmoji_flat.png',
+    assetIcon: 'assets/images/opsi_flat.png',
     color: Color(0xFFF97316),
     badgeTextColor: Color(0xFFB45309),
     badgeBgColor: Color(0xFFFEF3C7),
@@ -35,7 +35,7 @@ enum PlantStatus {
   darurat(
     label: 'Darurat',
     badge: 'DARURAT',
-    assetIcon: 'assets/images/cakmoji_sad.png',
+    assetIcon: 'assets/images/opsi_sad.png',
     color: Color(0xFFEF4444),
     badgeTextColor: Color(0xFFB91C1C),
     badgeBgColor: Color(0xFFFEE2E2),

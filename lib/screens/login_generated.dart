@@ -85,7 +85,7 @@ class _Header extends StatelessWidget {
             child: Padding(
               padding: EdgeInsets.only(bottom: 10, left: 24),
               child: Text(
-                'Data Naik, Emoji Baik!',
+                'Tanam Cerdas, Panen Berkualitas!',
                 style: TextStyle(
                   color: AppColors.textHero,
                   fontSize: 20,
@@ -111,10 +111,10 @@ class _LogoMark extends StatelessWidget {
     return ClipRRect(
       borderRadius: BorderRadius.circular(60),
       child: Image.asset(
-        'assets/images/cakmoji.png',
+        'assets/images/emotigrow.png',
         width: MediaQuery.of(context).size.width * 0.3,
         height: 60,
-        fit: BoxFit.cover,
+        fit: BoxFit.contain,
         errorBuilder: (_, __, ___) => const SizedBox.shrink(),
       ),
     );
@@ -297,16 +297,6 @@ class _LoginFormState extends State<_LoginForm> {
           const SizedBox(height: 16),
           Row(
             children: [
-              Expanded(
-                child: AppRoleButton(
-                  label: 'Petani',
-                  loading: _loadingRole == 'petani',
-                  onPressed: _loadingRole == null
-                      ? () => _authenticate('petani')
-                      : null,
-                ),
-              ),
-              const SizedBox(width: 12),
               Expanded(
                 child: AppRoleButton(
                   label: 'Pengguna',

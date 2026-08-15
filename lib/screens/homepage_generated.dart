@@ -105,41 +105,6 @@ class _HomepageGeneratedState extends State<HomepageGenerated> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      floatingActionButton: InkWell(
-        onTap: () {
-          Navigator.of(context).push(
-            PageRouteBuilder<void>(
-              pageBuilder: (_, animation, __) => ManualAndMenuPage(),
-              transitionDuration: const Duration(milliseconds: 800),
-            ),
-          );
-        },
-        child: Container(
-          width: 57,
-          height: 57,
-          decoration: ShapeDecoration(
-            color: const Color(0xBCE6FFEA),
-            shape: RoundedRectangleBorder(
-              side: BorderSide(width: 1, color: const Color(0xDB9DFFA2)),
-              borderRadius: BorderRadius.circular(16),
-            ),
-            shadows: [
-              BoxShadow(
-                color: Color(0xFF4CAE4F),
-                blurRadius: 10.50,
-                offset: Offset(0, 0),
-                spreadRadius: 0,
-              ),
-            ],
-          ),
-          padding: EdgeInsets.all(4),
-          child: SvgPicture.asset(
-            'assets/icons/book.svg',
-            width: 32,
-            height: 32,
-          ),
-        ),
-      ),
       body: _navIndex == 0
           ? Column(
               children: [
@@ -218,85 +183,94 @@ class _AppHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: 170,
-      decoration: BoxDecoration(
-        image: const DecorationImage(
-          image: AssetImage('assets/images/homepage_header.png'),
-          fit: BoxFit.cover,
-        ),
-      ),
+      color: AppColors.primary,
       child: SafeArea(
         bottom: false,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Row(
-            children: [
-              // Avatar
-              Container(
-                width: 54,
-                height: 54,
-                clipBehavior: Clip.antiAlias,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.white,
-                  border: Border.all(color: Colors.white, width: 2.5),
-                ),
-                child: Image.asset(
-                  'assets/images/cakmoji.png',
-                  width: 54,
-                  height: 54,
-                  fit: BoxFit.cover,
-                  errorBuilder: (_, __, ___) =>
-                      const Icon(Icons.person, color: AppColors.primary),
-                ),
+        child: Stack(
+          children: [
+            SizedBox(
+              width: double.infinity,
+              height: double.infinity,
+              child: SvgPicture.asset(
+                'assets/icons/batik_background.svg',
+                width: double.infinity,
+                height: double.infinity,
+                fit: BoxFit.fitWidth,
               ),
-              const SizedBox(width: 14),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text(
-                      'Hello!',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 22,
-                        fontFamily: 'Inter',
-                        fontWeight: FontWeight.w700,
-                        height: 1.2,
-                      ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Row(
+                children: [
+                  // Avatar
+                  Container(
+                    width: 54,
+                    height: 54,
+                    clipBehavior: Clip.antiAlias,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.white,
+                      border: Border.all(color: Colors.white, width: 2.5),
                     ),
-                    const SizedBox(height: 4),
-                    Text(
-                      userName,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 14,
-                        fontFamily: 'Inter',
-                        fontWeight: FontWeight.w400,
-                      ),
+                    child: Image.asset(
+                      'assets/images/cakmoji.png',
+                      width: 54,
+                      height: 54,
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, __, ___) =>
+                          const Icon(Icons.person, color: AppColors.primary),
                     ),
-                  ],
-                ),
+                  ),
+                  const SizedBox(width: 14),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text(
+                          'Hello!',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 22,
+                            fontFamily: 'Inter',
+                            fontWeight: FontWeight.w700,
+                            height: 1.2,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          userName,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 14,
+                            fontFamily: 'Inter',
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(top: 16),
+                    child: Row(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(right: 16),
+                          child: InkWell(
+                            onTap: () => launchWhatsApp(context),
+                            child: whatsappIcon(size: 28, color: Colors.white),
+                          ),
+                        ),
+                        _BellIcon(),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-              Padding(
-                padding: EdgeInsets.only(top: 16),
-                child: Row(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(right: 16),
-                      child: InkWell(
-                        onTap: () => launchWhatsApp(context),
-                        child: whatsappIcon(size: 28, color: Colors.white),
-                      ),
-                    ),
-                    _BellIcon(),
-                  ],
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -345,11 +319,11 @@ class _HomeContent extends StatelessWidget {
         _IotCard(),
         SizedBox(height: 24),
         _FeatureRow(),
-        SizedBox(height: 24),
-        _SectionHeader(),
-        SizedBox(height: 12),
-        _CategoriesGrid(),
-        SizedBox(height: 24),
+        // SizedBox(height: 24),
+        // _SectionHeader(),
+        // SizedBox(height: 12),
+        // _CategoriesGrid(),
+        // SizedBox(height: 24),
         // _PromoBanner(),
       ],
     );
@@ -377,14 +351,14 @@ class _StatusGrid extends StatelessWidget {
           count: 2,
           accent: Color(0xFF22C55E),
           icon: Icons.check_circle_outline_rounded,
-          imagePath: 'assets/images/cakmoji_happy.png',
+          imagePath: 'assets/images/opsi_happy.png',
         ),
         _StatusCard(
           title: 'Waspada',
           count: 0,
           accent: Color(0xFFFFCC00),
           // icon: Icons.warning_amber_rounded,
-          imagePath: 'assets/images/cakmoji_flat.png',
+          imagePath: 'assets/images/opsi_flat.png',
           svgIcon: 'assets/icons/circle_danger.svg',
         ),
         _StatusCard(
@@ -393,7 +367,7 @@ class _StatusGrid extends StatelessWidget {
           accent: Color(0xFFEF4444),
           // icon: Icons.emergency_outlined,
           svgIcon: 'assets/icons/plus_circle.svg',
-          imagePath: 'assets/images/cakmoji_sad.png',
+          imagePath: 'assets/images/opsi_sad.png',
         ),
       ],
     );
@@ -567,11 +541,6 @@ class _IotCard extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Image.asset(
-                'assets/images/kontrol_iot_banner_top.png',
-                width: MediaQuery.sizeOf(context).width * 0.25,
-                errorBuilder: (_, __, ___) => const SizedBox.shrink(),
-              ),
-              Image.asset(
                 'assets/images/kontrol_iot_banner_bot.png',
                 width: MediaQuery.sizeOf(context).width * 0.25,
                 errorBuilder: (_, __, ___) => const SizedBox.shrink(),
@@ -673,10 +642,11 @@ class _FeatureRow extends StatelessWidget {
               isLeftAligned: false,
               iconColor: const Color(0xFF0891B2),
               gradient: const [Color(0xFFE0F2FE), Color(0xFFF0F9FF)],
-              title: 'Konsultasi Ahli',
-              subtitle: 'Sesi konsultasi bersama agronom',
+              title: 'Daftar Kebun',
+              subtitle: 'Cek daftar tanaman anda',
               onTap: () => launchWhatsApp(context),
-              imageBackground: 'assets/images/konsultasi_ahli_card_background.png',
+              imageBackground:
+                  'assets/images/konsultasi_ahli_card_background.png',
             ),
           ),
         ),

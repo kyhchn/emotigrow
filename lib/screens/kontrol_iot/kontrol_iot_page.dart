@@ -65,16 +65,16 @@ class _KontrolIotPageState extends State<KontrolIotPage> {
   /// Avatar that matches a live health level (same expressions as the demo
   /// plants: happy → normal → sad).
   String _emoticonBig(KontrolIotStatus status) => switch (status) {
-    KontrolIotStatus.sehat => 'assets/images/ava_cakning_happy.png',
-    KontrolIotStatus.perhatian => 'assets/images/ava_blangkon_normal.png',
-    KontrolIotStatus.darurat => 'assets/images/ava_madura_sad.png',
+    KontrolIotStatus.sehat => 'assets/images/agrimoji_happy.png',
+    KontrolIotStatus.perhatian => 'assets/images/agrimoji_flat.png',
+    KontrolIotStatus.darurat => 'assets/images/agrimoji_sad.png',
   };
 
   /// Dropdown thumbnail that matches a live health level.
   String _emoticonSmall(KontrolIotStatus status) => switch (status) {
-    KontrolIotStatus.sehat => 'assets/images/cakmoji_happy.png',
-    KontrolIotStatus.perhatian => 'assets/images/cakmoji_flat.png',
-    KontrolIotStatus.darurat => 'assets/images/cakmoji_sad.png',
+    KontrolIotStatus.sehat => 'assets/images/opsi_happy.png',
+    KontrolIotStatus.perhatian => 'assets/images/opsi_flat.png',
+    KontrolIotStatus.darurat => 'assets/images/opsi_sad.png',
   };
 
   @override
@@ -155,16 +155,16 @@ class _KontrolIotPageState extends State<KontrolIotPage> {
                             ),
                             SizedBox(height: 12),
                             _MetricsGrid(live: live),
-                            SizedBox(height: 20),
-                            _SectionTitle(
-                              title: 'Aktivitas Terakhir',
-                              svg: 'assets/icons/history.svg',
-                            ),
-                            SizedBox(height: 16),
-                            _ActivityTimeline(),
-                            SizedBox(
-                              height: MediaQuery.of(context).size.height * 0.1,
-                            ),
+                            // SizedBox(height: 20),
+                            // _SectionTitle(
+                            //   title: 'Aktivitas Terakhir',
+                            //   svg: 'assets/icons/history.svg',
+                            // ),
+                            // SizedBox(height: 16),
+                            // _ActivityTimeline(),
+                            // SizedBox(
+                            //   height: MediaQuery.of(context).size.height * 0.1,
+                            // ),
                           ],
                         ),
                       ),
@@ -172,16 +172,16 @@ class _KontrolIotPageState extends State<KontrolIotPage> {
                   );
                 },
               ),
-              Positioned(
-                bottom: 0,
-                left: 0,
-                right: 0,
-                child: Container(
-                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
-                  color: Colors.white,
-                  child: const _ActionButtons(),
-                ),
-              ),
+              // Positioned(
+              //   bottom: 0,
+              //   left: 0,
+              //   right: 0,
+              //   child: Container(
+              //     padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+              //     color: Colors.white,
+              //     child: const _ActionButtons(),
+              //   ),
+              // ),
             ],
           ),
         ),
@@ -220,6 +220,18 @@ class _PlantOption {
   final String emoticonAssetBig;
   final String emoticonAssetSmall;
 }
+  // String _emoticonBig(KontrolIotStatus status) => switch (status) {
+  //   KontrolIotStatus.sehat => 'assets/images/agrimoji_happy.png',
+  //   KontrolIotStatus.perhatian => 'assets/images/agrimoji_flat.png',
+  //   KontrolIotStatus.darurat => 'assets/images/agrimoji_sad.png',
+  // };
+
+  // /// Dropdown thumbnail that matches a live health level.
+  // String _emoticonSmall(KontrolIotStatus status) => switch (status) {
+  //   KontrolIotStatus.sehat => 'assets/images/opsi_happy.png',
+  //   KontrolIotStatus.perhatian => 'assets/images/opsi_flat.png',
+  //   KontrolIotStatus.darurat => 'assets/images/opsi_sad.png',
+  // };
 
 /// Demo garden plants — replace with data from your backend.
 const List<_PlantOption> _demoPlants = [
@@ -228,24 +240,24 @@ const List<_PlantOption> _demoPlants = [
     status: _PlantStatus.sehat,
     health: 1,
     imageAsset: 'assets/images/selada.png',
-    emoticonAssetBig: 'assets/images/ava_cakning_happy.png',
-    emoticonAssetSmall: 'assets/images/cakmoji_happy.png',
+    emoticonAssetBig: 'assets/images/agrimoji_happy.png',
+    emoticonAssetSmall: 'assets/images/opsi_happy.png',
   ),
   _PlantOption(
     name: 'Pakcoy',
     status: _PlantStatus.perhatian,
     health: 0.55,
     imageAsset: 'assets/images/pakcoy.png',
-    emoticonAssetBig: 'assets/images/ava_blangkon_normal.png',
-    emoticonAssetSmall: 'assets/images/cakmoji_flat.png',
+    emoticonAssetBig: 'assets/images/agrimoji_flat.png',
+    emoticonAssetSmall: 'assets/images/opsi_flat.png',
   ),
   _PlantOption(
     name: 'Cabai Rawit',
     status: _PlantStatus.darurat,
     health: 0.3,
     imageAsset: 'assets/images/cabai.png',
-    emoticonAssetBig: 'assets/images/ava_madura_sad.png',
-    emoticonAssetSmall: 'assets/images/cakmoji_sad.png',
+    emoticonAssetBig: 'assets/images/agrimoji_sad.png',
+    emoticonAssetSmall: 'assets/images/opsi_sad.png',
   ),
 ];
 
@@ -440,72 +452,31 @@ class _AchievementsCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final isReadyToHarvest = plant.health >= 1.0;
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 18),
       decoration: BoxDecoration(
-        color: const Color(0xFFF6F8F7),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: KontrolIotPage._line),
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'ACHIEVEMENTS',
-                  style: TextStyle(
-                    color: KontrolIotPage._hint,
-                    fontSize: 10,
-                    fontFamily: 'Inter',
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: 1,
-                  ),
-                ),
-                const SizedBox(height: 12),
-                _AchievementBullet(
-                  '1. Pamerkan tanamanmu di sosmed!',
-                  isReadyToHarvest,
-                ),
-                const SizedBox(height: 6),
-                _AchievementBullet(
-                  '2. Rawat tanaman hingga 100/100',
-                  isReadyToHarvest,
-                ),
-              ],
-            ),
-          ),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 18),
-            decoration: BoxDecoration(
-              color: isReadyToHarvest
-                  ? AppColors.secondary
-                  : const Color(0xFFE2E8F0),
-              borderRadius: BorderRadius.circular(16),
-              boxShadow: const [
-                BoxShadow(
-                  color: Color(0x0C000000),
-                  blurRadius: 2,
-                  offset: Offset(0, 1),
-                ),
-              ],
-            ),
-            // height: MediaQuery.of(context).size.height * 0.1,
-            width: MediaQuery.of(context).size.width * 0.3,
-            child: Center(
-              child: Text(
-                isReadyToHarvest ? 'JUAL' : '17 Hari lagi panen',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: isReadyToHarvest ? Colors.white : KontrolIotPage._ink,
-                  fontSize: 16,
-                  fontFamily: 'Inter',
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ),
+        color: isReadyToHarvest ? AppColors.secondary : const Color(0xFFE2E8F0),
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x0C000000),
+            blurRadius: 2,
+            offset: Offset(0, 1),
           ),
         ],
+      ),
+      // height: MediaQuery.of(context).size.height * 0.1,
+      width: MediaQuery.of(context).size.width * 0.3,
+      child: Center(
+        child: Text(
+          isReadyToHarvest ? 'JUAL' : '17 Hari lagi panen',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: isReadyToHarvest ? Colors.white : KontrolIotPage._ink,
+            fontSize: 16,
+            fontFamily: 'Inter',
+            fontWeight: FontWeight.w700,
+          ),
+        ),
       ),
     );
   }

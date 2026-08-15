@@ -21,7 +21,7 @@ class AppConfig {
   /// To use your own splash image, simply replace the file at
   /// `assets/images/splash.png` (keeping the same name), or point this field at
   /// a different file under `assets/images/` and rebuild.
-  static const String splashImageAsset = 'assets/images/splash-cakmoji.png';
+  static const String splashImageAsset = 'assets/images/splash-opsi.png';
 
   /// How long the splash screen stays on screen before navigating away.
   static const Duration splashDuration = Duration(seconds: 2);

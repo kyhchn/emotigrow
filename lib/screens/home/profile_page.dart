@@ -76,7 +76,7 @@ class _ProfilePageState extends State<ProfilePage> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        title: const Text('Keluar dari Cakmoji?'),
+        title: const Text('Keluar dari Emotigrow?'),
         content: const Text('Anda akan kembali ke halaman masuk.'),
         actions: [
           TextButton(
@@ -116,105 +116,84 @@ class _ProfilePageState extends State<ProfilePage> {
       children: [
         Container(
           // height: MediaQuery.of(context).size.height * 0.3,
-          padding: const EdgeInsets.symmetric(vertical: 24),
+          padding: const EdgeInsets.only(bottom: 32),
           width: double.infinity,
-          decoration: BoxDecoration(
-            image: const DecorationImage(
-              image: AssetImage('assets/images/homepage_header.png'),
-              fit: BoxFit.cover,
-            ),
-          ),
+          decoration: BoxDecoration(color: AppColors.primary),
           child: SafeArea(
             bottom: false,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Column(
-                children: [
-                  Stack(
-                    clipBehavior: Clip.none,
-                    children: [
-                      Container(
-                        width: MediaQuery.of(context).size.width * 0.4,
-                        height: MediaQuery.of(context).size.width * 0.4,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.transparent,
-                          border: Border.all(color: Colors.white, width: 4),
-                          image: const DecorationImage(
-                            image: AssetImage(
-                              'assets/images/ava_madura_sad.png',
+            child: Stack(
+              children: [
+                Positioned.fill(
+                  child: SvgPicture.asset(
+                    'assets/icons/batik_background.svg',
+                    fit: BoxFit.cover,
+                    width: double.infinity,
+                    height: double.infinity,
+                  ),
+                ),
+                SizedBox(
+                  width: double.infinity,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Column(
+                      children: [
+                        SizedBox(height: 24),
+                        Stack(
+                          clipBehavior: Clip.none,
+                          children: [
+                            Container(
+                              width: MediaQuery.of(context).size.width * 0.4,
+                              height: MediaQuery.of(context).size.width * 0.4,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.transparent,
+                                border: Border.all(
+                                  color: Colors.white,
+                                  width: 4,
+                                ),
+                                image: const DecorationImage(
+                                  image: AssetImage(
+                                    'assets/images/ava_madura_sad.png',
+                                  ),
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                              child: const Icon(
+                                Icons.construction,
+                                color: Colors.white,
+                              ),
                             ),
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                        child: const Icon(
-                          Icons.construction,
-                          color: Colors.white,
-                        ),
-                      ),
 
-                      // Bottom-right circle
-                      Positioned(
-                        bottom: -4,
-                        right: -4,
-                        child: Container(
-                          width: 48,
-                          height: 48,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: const Color(0xFF13EC13),
-                            border: Border.all(color: Colors.white, width: 3),
-                          ),
-                          child: const Icon(
-                            Icons.edit_outlined,
-                            color: Colors.black,
-                            size: 24,
-                          ),
+                            // Bottom-right circle
+                            Positioned(
+                              bottom: -4,
+                              right: -4,
+                              child: Container(
+                                width: 48,
+                                height: 48,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: const Color(0xFF13EC13),
+                                  border: Border.all(
+                                    color: Colors.white,
+                                    width: 3,
+                                  ),
+                                ),
+                                child: const Icon(
+                                  Icons.edit_outlined,
+                                  color: Colors.black,
+                                  size: 24,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 12),
-                  Text(
-                    _name,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.white,
+                        SizedBox(height: 12),
+                      ],
                     ),
                   ),
-                  Text(
-                    _email,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.white,
-                    ),
-                  ),
-                  SizedBox(height: 12),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 6,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Color(0xFFCCFFCC),
-                      borderRadius: BorderRadius.circular(999),
-                    ),
-                    child: Text(
-                      _typeLabel,
-                      style: TextStyle(
-                        color: Color(0xFF097004),
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),
@@ -239,6 +218,45 @@ class _ProfilePageState extends State<ProfilePage> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
+                      Text(
+                        _name,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.black,
+                        ),
+                      ),
+                      Text(
+                        _email,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.black,
+                        ),
+                      ),
+                      SizedBox(height: 12),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 6,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Color(0xFFCCFFCC),
+                          borderRadius: BorderRadius.circular(999),
+                        ),
+                        child: Text(
+                          _typeLabel,
+                          style: TextStyle(
+                            color: Color(0xFF097004),
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 16),
                       profileMenuList(
                         'Edit Profil',
                         'assets/icons/profile_edit.svg',
