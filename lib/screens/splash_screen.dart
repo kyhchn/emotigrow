@@ -38,11 +38,14 @@ class _SplashScreenState extends State<SplashScreen>
     _timer = Timer(AppConfig.splashDuration, _goNext);
   }
 
-  void _goNext() {
+  void _goNext() async {
     if (!mounted) return;
 
+    // Delay the transition for fixed time
+    await Future.delayed(const Duration(seconds: 5));
+
     final Widget destination = _isSignedIn
-        ?  HomepageGenerated()
+        ? HomepageGenerated()
         : const LoginGenerated();
 
     Navigator.of(context).pushReplacement(
@@ -69,10 +72,7 @@ class _SplashScreenState extends State<SplashScreen>
     return Scaffold(
       backgroundColor: brandColor,
       body: FadeTransition(
-        opacity: CurvedAnimation(
-          parent: _fadeController,
-          curve: Curves.easeIn,
-        ),
+        opacity: CurvedAnimation(parent: _fadeController, curve: Curves.easeIn),
         child: Stack(
           fit: StackFit.expand,
           children: [

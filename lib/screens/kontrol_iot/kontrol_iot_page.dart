@@ -151,6 +151,7 @@ class _KontrolIotPageState extends State<KontrolIotPage> {
                             _SectionTitle(
                               title: 'Lingkungan',
                               svg: 'assets/icons/hotspot.svg',
+                              timestamp: live?.timestamp ?? DateTime.now(),
                             ),
                             SizedBox(height: 12),
                             _MetricsGrid(live: live),
@@ -543,9 +544,10 @@ class _AchievementBullet extends StatelessWidget {
 
 // -- Section title -----------------------------------------------------------
 class _SectionTitle extends StatelessWidget {
-  const _SectionTitle({required this.title, required this.svg});
+  const _SectionTitle({required this.title, required this.svg, this.timestamp});
   final String title;
   final String svg;
+  final DateTime? timestamp;
 
   @override
   Widget build(BuildContext context) {
@@ -570,6 +572,19 @@ class _SectionTitle extends StatelessWidget {
             fontWeight: FontWeight.w700,
           ),
         ),
+        Spacer(),
+        timestamp != null
+            // Terakhir diperbarui tanggal/bulan/tahun jam:menit, misal "Terakhir: 06:30"
+            ? Text(
+                'Terakhir diperbarui ${timestamp!.day.toString().padLeft(2, '0')}/${timestamp!.month.toString().padLeft(2, '0')}/${timestamp!.year} ${timestamp!.hour.toString().padLeft(2, '0')}:${timestamp!.minute.toString().padLeft(2, '0')}',
+                style: const TextStyle(
+                  color: KontrolIotPage._muted,
+                  fontSize: 10,
+                  fontFamily: 'Inter',
+                  fontWeight: FontWeight.w500,
+                ),
+              )
+            : const SizedBox.shrink(),
       ],
     );
   }

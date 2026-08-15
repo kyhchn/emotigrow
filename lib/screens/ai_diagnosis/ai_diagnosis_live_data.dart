@@ -40,6 +40,10 @@ String get diagnosisReferenceImageUrl =>
     '$supabaseStorageBaseUrl/storage/v1/object/public/'
     '$diagnosisReferenceBucket/';
 
+String get ourPlantImageUrl =>
+    '$supabaseStorageBaseUrl/storage/v1/object/public/'
+    'plant-snapshots/pi3b-02/latest.jpg';
+
 /// Typed snapshot of `plant_readings/pi3b-02/latest`.
 class LatestPlantReading {
   const LatestPlantReading({required this.confidence, required this.diagnosis});
@@ -69,6 +73,10 @@ class LatestPlantReading {
 
   static diagnosisReferenceImageUrlFor(String diagnosis) =>
       '$diagnosisReferenceImageUrl$diagnosis.jpg';
+
+  static ourPlantImageUrlFor() =>
+      '$supabaseStorageBaseUrl/storage/v1/object/public/'
+      'plant-snapshots/pi3b-02/latest.jpg';
 }
 
 /// Streams `plant_readings/pi3b-02/latest` and re-emits on every device

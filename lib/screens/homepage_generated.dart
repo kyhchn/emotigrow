@@ -2,6 +2,7 @@ import 'package:cakmoji_flutter/screens/ai_diagnosis/ai_diagnosis_transition.dar
 import 'package:cakmoji_flutter/screens/home/kebunku_page.dart';
 import 'package:cakmoji_flutter/screens/home/manual_and_menu_page.dart';
 import 'package:cakmoji_flutter/screens/home/marketplace_page.dart';
+import 'package:cakmoji_flutter/screens/home/profile_page.dart';
 import 'package:cakmoji_flutter/screens/kontrol_iot/kontrol_iot_transition.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -144,14 +145,30 @@ class _HomepageGeneratedState extends State<HomepageGenerated> {
               children: [
                 _AppHeader(userName: _userName),
                 Expanded(
-                  child: SingleChildScrollView(
-                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
-                    child: Center(
-                      child: ConstrainedBox(
-                        constraints: const BoxConstraints(maxWidth: 560),
-                        child: const _HomeContent(),
+                  child: Stack(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(0),
+                        color: Colors.white,
+                        width: double.infinity,
+                        height: MediaQuery.sizeOf(context).height * 0.3,
+                        child: SvgPicture.asset(
+                          'assets/icons/batik_background.svg',
+                          width: double.infinity,
+                          height: double.infinity,
+                          fit: BoxFit.fitWidth,
+                        ),
                       ),
-                    ),
+                      SingleChildScrollView(
+                        padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+                        child: Center(
+                          child: ConstrainedBox(
+                            constraints: const BoxConstraints(maxWidth: 560),
+                            child: const _HomeContent(),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
@@ -170,7 +187,7 @@ class _HomepageGeneratedState extends State<HomepageGenerated> {
                 Expanded(child: MarketplacePage()),
               ],
             )
-          : null,
+          : ProfilePage(),
       bottomNavigationBar: AppBottomNav(
         items: [
           BottomNavItem(icon: Icons.home_outlined, label: 'Beranda'),
@@ -632,6 +649,7 @@ class _FeatureRow extends StatelessWidget {
               gradient: const [Color(0xFFE9F9E4), Color(0xFFF6FCF3)],
               title: 'AI Diagnosis',
               subtitle: 'Cek laporan infeksi pada tanaman',
+              imageBackground: 'assets/images/ai_diagnosis_card_background.png',
               onTap: () => Navigator.of(context).push(
                 PageRouteBuilder<void>(
                   pageBuilder: (_, animation, __) => AiDiagnosisTransition(),
@@ -658,6 +676,7 @@ class _FeatureRow extends StatelessWidget {
               title: 'Konsultasi Ahli',
               subtitle: 'Sesi konsultasi bersama agronom',
               onTap: () => launchWhatsApp(context),
+              imageBackground: 'assets/images/konsultasi_ahli_card_background.png',
             ),
           ),
         ),
@@ -673,6 +692,7 @@ class _FeatureCard extends StatelessWidget {
     required this.gradient,
     required this.title,
     required this.subtitle,
+    required this.imageBackground,
     this.iconWidget,
     this.onTap,
     this.isLeftAligned = true,
@@ -684,6 +704,8 @@ class _FeatureCard extends StatelessWidget {
   final String title;
   final String subtitle;
   final bool isLeftAligned;
+
+  final String imageBackground;
 
   /// Optional custom leading widget (e.g. the WhatsApp logo); when provided it
   /// replaces the [icon] / [iconColor] pair.
@@ -713,6 +735,10 @@ class _FeatureCard extends StatelessWidget {
               offset: Offset(0, 2),
             ),
           ],
+          image: DecorationImage(
+            image: AssetImage(imageBackground),
+            fit: BoxFit.cover,
+          ),
         ),
         child: Column(
           crossAxisAlignment: isLeftAligned

@@ -35,6 +35,7 @@ class KontrolIotLiveData {
     required this.ph,
     required this.temp,
     required this.lux,
+    required this.timestamp,
   });
 
   final KontrolIotStatus status;
@@ -42,6 +43,7 @@ class KontrolIotLiveData {
   final double ph;
   final double temp;
   final double lux;
+  final DateTime timestamp;
 
   /// Health-bar score (0..1) derived from [status] — mirrors the demo plants
   /// (sehat 100, perhatian 55, darurat 30).
@@ -84,6 +86,7 @@ class KontrolIotLiveData {
     final ph = _measurementFrom(sensors['ph']);
     final temp = _measurementFrom(sensors['temp']);
     final lux = _measurementFrom(sensors['lux']);
+    final timestamp = DateTime.tryParse(map['timestamp']?.toString() ?? '');
     if (status == null ||
         ec == null ||
         ph == null ||
@@ -97,6 +100,7 @@ class KontrolIotLiveData {
       ec: ec,
       ph: ph,
       temp: temp,
+      timestamp: timestamp ?? DateTime.now(),
       lux: lux,
     );
   }

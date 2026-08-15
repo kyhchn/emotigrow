@@ -93,6 +93,16 @@ class AiDiagnosisScreen extends StatefulWidget {
 
 class _AiDiagnosisScreenState extends State<AiDiagnosisScreen> {
   _DiagnosisResult _selected = _demoResults.first;
+  final Map<String, String> diseaseLabels = {
+    'bacterial.jpg': 'Penyakit Bakteri',
+    'downy_mildew_on_lettuce.jpg': 'Embun Bulu pada Selada',
+    'healthy.jpg': 'Sehat (tidak sakit)',
+    'powdery_mildew_on_lettuce.jpg': 'Embun Tepung pada Selada',
+    'septoria_blight_on_lettuce.jpg': 'Hawar Septoria pada Selada',
+    'shepherd_purse_weeds.jpg': 'Gulma',
+    'viral.jpg': 'Penyakit Virus',
+    'wilt_and_leaf_blight_on_lettuce.jpg': 'Layu dan Hawar Daun pada Selada',
+  };
 
   /// Live-driven twin of the first demo result (Selada Sehat): the confidence
   /// comes from `plant_readings/pi3b-02/latest` and the Referensi image from
@@ -101,13 +111,17 @@ class _AiDiagnosisScreenState extends State<AiDiagnosisScreen> {
     return _DiagnosisResult(
       name: _demoResults.first.name,
       mood: _demoResults.first.mood,
-      fotoImage: _demoResults.first.fotoImage,
+      fotoImage: LatestPlantReading.ourPlantImageUrlFor(),
       referensiImage: LatestPlantReading.diagnosisReferenceImageUrlFor(
         reading.diagnosis,
       ),
       confident: reading.confidence,
       emoticonAsset: _demoResults.first.emoticonAsset,
-      diseaseName: _selected.diseaseName ?? _demoResults.first.diseaseName,
+      diseaseName:
+          diseaseLabels['${reading.diagnosis.toLowerCase()}.jpg'] ??
+          reading
+              .diagnosis, // Use the label if available, otherwise fallback to the raw diagnosis
+      // diseaseName: _selected.diseaseName ?? _demoResults.first.diseaseName,
     );
   }
 
