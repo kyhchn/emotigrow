@@ -1,6 +1,7 @@
 import 'package:cakmoji_flutter/core/app_colors.dart';
 import 'package:cakmoji_flutter/screens/kontrol_iot/kontrol_iot_live_data.dart';
 import 'package:cakmoji_flutter/screens/kontrol_iot/kontrol_status/kontrol_status_page.dart';
+import 'package:cakmoji_flutter/services/supabase_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -23,6 +24,50 @@ class KontrolIotPage extends StatefulWidget {
 }
 
 class _KontrolIotPageState extends State<KontrolIotPage> {
+  /// When the signed-in user's Supabase `profiles` row was created
+  /// (`created_at`). The harvest countdown is measured from here: the plant is
+  /// ready to harvest 17 days after the account was created.
+  DateTime? _userCreatedAt;
+
+  /// How many days after the user's account creation the plant is ready to
+  /// harvest.
+  static const int _harvestDays = 17;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserCreatedAt();
+  }
+
+  /// Fetches the signed-in profile's `created_at` to drive the harvest
+  /// countdown. Falls back to `null` (demo value) when offline / uninitialized,
+  /// mirroring the guarded access used by the profile screen.
+  Future<void> _loadUserCreatedAt() async {
+    DateTime? createdAt;
+    try {
+      final profile = await SupabaseService.instance.fetchProfile();
+      final raw = profile?['created_at'];
+      if (raw is String) createdAt = DateTime.tryParse(raw);
+    } catch (_) {
+      createdAt = null;
+    }
+    if (!mounted || createdAt == null) return;
+    setState(() => _userCreatedAt = createdAt);
+  }
+
+  /// Days left until harvest: `harvestDays - (now - userCreatedAt)`.
+  ///
+  /// When no profile date is available it falls back to the full demo duration
+  /// so the card keeps showing "17 Hari lagi panen". Returns `0` once the
+  /// harvest date has already passed, which signals the ready-to-harvest state.
+  int _daysLeftToHarvest() {
+    final createdAt = _userCreatedAt;
+    if (createdAt == null) return _harvestDays;
+    final elapsed = DateTime.now().difference(createdAt).inDays;
+    final left = _harvestDays - elapsed;
+    return left < 0 ? 0 : left;
+  }
+
   _PlantOption _selectedPlant = _demoPlants.first;
 
   /// The plant rendered by the UI. Only the first plant (Selada Keriting) is
@@ -146,7 +191,10 @@ class _KontrolIotPageState extends State<KontrolIotPage> {
                             ),
 
                             SizedBox(height: 16),
-                            _AchievementsCard(plant: plant),
+                            _AchievementsCard(
+                              plant: plant,
+                              daysLeftToHarvest: _daysLeftToHarvest(),
+                            ),
                             SizedBox(height: 20),
                             _SectionTitle(
                               title: 'Lingkungan',
@@ -220,18 +268,18 @@ class _PlantOption {
   final String emoticonAssetBig;
   final String emoticonAssetSmall;
 }
-  // String _emoticonBig(KontrolIotStatus status) => switch (status) {
-  //   KontrolIotStatus.sehat => 'assets/images/agrimoji_happy.png',
-  //   KontrolIotStatus.perhatian => 'assets/images/agrimoji_flat.png',
-  //   KontrolIotStatus.darurat => 'assets/images/agrimoji_sad.png',
-  // };
+// String _emoticonBig(KontrolIotStatus status) => switch (status) {
+//   KontrolIotStatus.sehat => 'assets/images/agrimoji_happy.png',
+//   KontrolIotStatus.perhatian => 'assets/images/agrimoji_flat.png',
+//   KontrolIotStatus.darurat => 'assets/images/agrimoji_sad.png',
+// };
 
-  // /// Dropdown thumbnail that matches a live health level.
-  // String _emoticonSmall(KontrolIotStatus status) => switch (status) {
-  //   KontrolIotStatus.sehat => 'assets/images/opsi_happy.png',
-  //   KontrolIotStatus.perhatian => 'assets/images/opsi_flat.png',
-  //   KontrolIotStatus.darurat => 'assets/images/opsi_sad.png',
-  // };
+// /// Dropdown thumbnail that matches a live health level.
+// String _emoticonSmall(KontrolIotStatus status) => switch (status) {
+//   KontrolIotStatus.sehat => 'assets/images/opsi_happy.png',
+//   KontrolIotStatus.perhatian => 'assets/images/opsi_flat.png',
+//   KontrolIotStatus.darurat => 'assets/images/opsi_sad.png',
+// };
 
 /// Demo garden plants — replace with data from your backend.
 const List<_PlantOption> _demoPlants = [
@@ -444,17 +492,30 @@ class _HealthBar extends StatelessWidget {
 
 // -- Achievements card -------------------------------------------------------
 class _AchievementsCard extends StatelessWidget {
-  const _AchievementsCard({required this.plant});
+  const _AchievementsCard({
+    required this.plant,
+    required this.daysLeftToHarvest,
+  });
 
   final _PlantOption plant;
 
+  /// Days remaining until harvest (0 means the harvest date has passed).
+  final int daysLeftToHarvest;
+
   @override
   Widget build(BuildContext context) {
+    // Achievement bullets follow plant health (unchanged behavior).
     final isReadyToHarvest = plant.health >= 1.0;
+    // The harvest box is driven by the countdown from the user's `created_at`:
+    // once the remaining days hit zero the plant is ready to harvest.
+    final isHarvestReady = daysLeftToHarvest <= 0;
+    final harvestLabel = isHarvestReady
+        ? 'JUAL'
+        : '$daysLeftToHarvest Hari lagi panen';
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 18),
       decoration: BoxDecoration(
-        color: isReadyToHarvest ? AppColors.secondary : const Color(0xFFE2E8F0),
+        color: isHarvestReady ? AppColors.secondary : const Color(0xFFE2E8F0),
         borderRadius: BorderRadius.circular(16),
         boxShadow: const [
           BoxShadow(
@@ -468,10 +529,10 @@ class _AchievementsCard extends StatelessWidget {
       width: MediaQuery.of(context).size.width * 0.3,
       child: Center(
         child: Text(
-          isReadyToHarvest ? 'JUAL' : '17 Hari lagi panen',
+          harvestLabel,
           textAlign: TextAlign.center,
           style: TextStyle(
-            color: isReadyToHarvest ? Colors.white : KontrolIotPage._ink,
+            color: isHarvestReady ? Colors.white : KontrolIotPage._ink,
             fontSize: 16,
             fontFamily: 'Inter',
             fontWeight: FontWeight.w700,

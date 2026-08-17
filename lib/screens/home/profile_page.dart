@@ -119,82 +119,79 @@ class _ProfilePageState extends State<ProfilePage> {
           padding: const EdgeInsets.only(bottom: 32),
           width: double.infinity,
           decoration: BoxDecoration(color: AppColors.primary),
-          child: SafeArea(
-            bottom: false,
-            child: Stack(
-              children: [
-                Positioned.fill(
-                  child: SvgPicture.asset(
-                    'assets/icons/batik_background.svg',
-                    fit: BoxFit.cover,
-                    width: double.infinity,
-                    height: double.infinity,
-                  ),
-                ),
-                SizedBox(
+          child: Stack(
+            children: [
+              Positioned.fill(
+                child: SvgPicture.asset(
+                  'assets/icons/batik_background.svg',
+                  fit: BoxFit.cover,
                   width: double.infinity,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Column(
-                      children: [
-                        SizedBox(height: 24),
-                        Stack(
-                          clipBehavior: Clip.none,
-                          children: [
-                            Container(
-                              width: MediaQuery.of(context).size.width * 0.4,
-                              height: MediaQuery.of(context).size.width * 0.4,
+                  height: double.infinity,
+                ),
+              ),
+              SizedBox(
+                width: double.infinity,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Column(
+                    children: [
+                      SizedBox(height: 24),
+                      Stack(
+                        clipBehavior: Clip.none,
+                        children: [
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.4,
+                            height: MediaQuery.of(context).size.width * 0.4,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.transparent,
+                              border: Border.all(
+                                color: Colors.white,
+                                width: 4,
+                              ),
+                              image: const DecorationImage(
+                                image: AssetImage(
+                                  'assets/images/ava_madura_sad.png',
+                                ),
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                            child: const Icon(
+                              Icons.construction,
+                              color: Colors.white,
+                            ),
+                          ),
+          
+                          // Bottom-right circle
+                          Positioned(
+                            bottom: -4,
+                            right: -4,
+                            child: Container(
+                              width: 48,
+                              height: 48,
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
-                                color: Colors.transparent,
+                                color: const Color(0xFF13EC13),
                                 border: Border.all(
                                   color: Colors.white,
-                                  width: 4,
-                                ),
-                                image: const DecorationImage(
-                                  image: AssetImage(
-                                    'assets/images/ava_madura_sad.png',
-                                  ),
-                                  fit: BoxFit.cover,
+                                  width: 3,
                                 ),
                               ),
                               child: const Icon(
-                                Icons.construction,
-                                color: Colors.white,
+                                Icons.edit_outlined,
+                                color: Colors.black,
+                                size: 24,
                               ),
                             ),
-
-                            // Bottom-right circle
-                            Positioned(
-                              bottom: -4,
-                              right: -4,
-                              child: Container(
-                                width: 48,
-                                height: 48,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: const Color(0xFF13EC13),
-                                  border: Border.all(
-                                    color: Colors.white,
-                                    width: 3,
-                                  ),
-                                ),
-                                child: const Icon(
-                                  Icons.edit_outlined,
-                                  color: Colors.black,
-                                  size: 24,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 12),
-                      ],
-                    ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 12),
+                    ],
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
         Expanded(

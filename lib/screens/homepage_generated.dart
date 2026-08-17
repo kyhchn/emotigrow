@@ -1,6 +1,5 @@
 import 'package:cakmoji_flutter/screens/ai_diagnosis/ai_diagnosis_transition.dart';
 import 'package:cakmoji_flutter/screens/home/kebunku_page.dart';
-import 'package:cakmoji_flutter/screens/home/manual_and_menu_page.dart';
 import 'package:cakmoji_flutter/screens/home/marketplace_page.dart';
 import 'package:cakmoji_flutter/screens/home/profile_page.dart';
 import 'package:cakmoji_flutter/screens/kontrol_iot/kontrol_iot_transition.dart';
@@ -184,94 +183,91 @@ class _AppHeader extends StatelessWidget {
     return Container(
       height: 170,
       color: AppColors.primary,
-      child: SafeArea(
-        bottom: false,
-        child: Stack(
-          children: [
-            SizedBox(
+      child: Stack(
+        children: [
+          SizedBox(
+            width: double.infinity,
+            height: MediaQuery.sizeOf(context).height * 0.1,
+            child: SvgPicture.asset(
+              'assets/icons/batik_background.svg',
               width: double.infinity,
               height: double.infinity,
-              child: SvgPicture.asset(
-                'assets/icons/batik_background.svg',
-                width: double.infinity,
-                height: double.infinity,
-                fit: BoxFit.fitWidth,
-              ),
+              fit: BoxFit.fitWidth,
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Row(
-                children: [
-                  // Avatar
-                  Container(
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Row(
+              children: [
+                // Avatar
+                Container(
+                  width: 54,
+                  height: 54,
+                  clipBehavior: Clip.antiAlias,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.white,
+                    border: Border.all(color: Colors.white, width: 2.5),
+                  ),
+                  child: Image.asset(
+                    'assets/images/cakmoji.png',
                     width: 54,
                     height: 54,
-                    clipBehavior: Clip.antiAlias,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.white,
-                      border: Border.all(color: Colors.white, width: 2.5),
-                    ),
-                    child: Image.asset(
-                      'assets/images/cakmoji.png',
-                      width: 54,
-                      height: 54,
-                      fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) =>
-                          const Icon(Icons.person, color: AppColors.primary),
-                    ),
+                    fit: BoxFit.cover,
+                    errorBuilder: (_, __, ___) =>
+                        const Icon(Icons.person, color: AppColors.primary),
                   ),
-                  const SizedBox(width: 14),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Text(
-                          'Hello!',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 22,
-                            fontFamily: 'Inter',
-                            fontWeight: FontWeight.w700,
-                            height: 1.2,
-                          ),
+                ),
+                const SizedBox(width: 14),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text(
+                        'Hello!',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 22,
+                          fontFamily: 'Inter',
+                          fontWeight: FontWeight.w700,
+                          height: 1.2,
                         ),
-                        const SizedBox(height: 4),
-                        Text(
-                          userName,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 14,
-                            fontFamily: 'Inter',
-                            fontWeight: FontWeight.w400,
-                          ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        userName,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 14,
+                          fontFamily: 'Inter',
+                          fontWeight: FontWeight.w400,
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                  Padding(
-                    padding: EdgeInsets.only(top: 16),
-                    child: Row(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(right: 16),
-                          child: InkWell(
-                            onTap: () => launchWhatsApp(context),
-                            child: whatsappIcon(size: 28, color: Colors.white),
-                          ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(top: 16),
+                  child: Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(right: 16),
+                        child: InkWell(
+                          onTap: () => launchWhatsApp(context),
+                          child: whatsappIcon(size: 28, color: Colors.white),
                         ),
-                        _BellIcon(),
-                      ],
-                    ),
+                      ),
+                      _BellIcon(),
+                    ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -426,7 +422,7 @@ class _StatusCard extends StatelessWidget {
                     height: 26,
                     // colorFilter: ColorFilter.mode(accent, BlendMode.srcIn),
                   ),
-                Image.asset(imagePath, width: 26, height: 26),
+                Image.asset(imagePath, width: 36, height: 36),
               ],
             ),
           ),
@@ -710,46 +706,53 @@ class _FeatureCard extends StatelessWidget {
             fit: BoxFit.cover,
           ),
         ),
-        child: Column(
-          crossAxisAlignment: isLeftAligned
-              ? CrossAxisAlignment.start
-              : CrossAxisAlignment.end,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
+        child: FractionallySizedBox(
+          widthFactor: 0.7,
+          alignment: isLeftAligned
+              ? Alignment.centerLeft
+              : Alignment.centerRight,
+          child: Column(
+            crossAxisAlignment: isLeftAligned
+                ? CrossAxisAlignment.start
+                : CrossAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: iconWidget ?? Icon(icon, color: iconColor, size: 22),
               ),
-              child: iconWidget ?? Icon(icon, color: iconColor, size: 22),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              title,
-              style: const TextStyle(
-                color: Color(0xFF111812),
-                fontSize: 14,
-                fontFamily: 'Inter',
-                fontWeight: FontWeight.w700,
+              const SizedBox(height: 8),
+              Text(
+                title,
+                textAlign: isLeftAligned ? TextAlign.start : TextAlign.end,
+                style: const TextStyle(
+                  color: Color(0xFF111812),
+                  fontSize: 14,
+                  fontFamily: 'Inter',
+                  fontWeight: FontWeight.w700,
+                ),
               ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              subtitle,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              textAlign: isLeftAligned ? TextAlign.start : TextAlign.end,
-              style: const TextStyle(
-                color: Color(0xFF6B7280),
-                fontSize: 10,
-                fontFamily: 'Inter',
-                fontWeight: FontWeight.w500,
-                height: 1.3,
+              const SizedBox(height: 4),
+              Text(
+                subtitle,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                textAlign: isLeftAligned ? TextAlign.start : TextAlign.end,
+                style: const TextStyle(
+                  color: Color(0xFF6B7280),
+                  fontSize: 10,
+                  fontFamily: 'Inter',
+                  fontWeight: FontWeight.w500,
+                  height: 1.3,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
