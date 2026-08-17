@@ -14,7 +14,7 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  String _name = 'Pengguna Cakmoji';
+  String _name = 'Pengguna Emotigrow';
   String _email = '';
   String _type = 'pelanggan'; // from profiles.type: 'petani' | 'pelanggan'
   bool _signingOut = false;

@@ -32,7 +32,7 @@ Widget whatsappIcon({double size = 28, Color color = Colors.white}) {
 const String kWhatsAppSupportNumber = '6289528344530';
 
 /// Pre-filled message when opening the support chat.
-const String kWhatsAppSupportMessage = 'Halo Cakmoji, saya ingin bertanya.';
+const String kWhatsAppSupportMessage = 'Halo Emotigrow, saya ingin bertanya.';
 
 /// Opens a WhatsApp chat with [number], pre-filling [message].
 ///

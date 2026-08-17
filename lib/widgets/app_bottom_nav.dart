@@ -11,7 +11,7 @@ class BottomNavItem {
   final Widget? customIcon;
 }
 
-/// Reusable bottom navigation bar matching the Cakmoji design:
+/// Reusable bottom navigation bar matching the Emotigrow design:
 /// teal background, evenly-spaced destinations, and an optional raised center
 /// button (scan/FAB). Every child is `Expanded`, so it resizes with any width.
 class AppBottomNav extends StatelessWidget {

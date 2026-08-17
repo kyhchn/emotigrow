@@ -53,7 +53,7 @@ class _MobileOnlyPlaceholder extends StatelessWidget {
                 const Icon(Icons.smartphone, size: 96, color: Colors.white),
                 const SizedBox(height: 24),
                 const Text(
-                  'Cakmoji hanya tersedia di perangkat seluler',
+                  'Emotigrow hanya tersedia di perangkat seluler',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: Colors.white,
@@ -64,7 +64,7 @@ class _MobileOnlyPlaceholder extends StatelessWidget {
                 ),
                 const SizedBox(height: 12),
                 Text(
-                  'Silakan buka Cakmoji melalui handphone, atau sempitkan '
+                  'Silakan buka Emotigrow melalui handphone, atau sempitkan '
                   'jendela browser Anda agar tampilan ponsel dapat dimuat.',
                   textAlign: TextAlign.center,
                   style: TextStyle(

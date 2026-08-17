@@ -10,7 +10,7 @@ class ManualAndMenuPage extends StatelessWidget {
       backgroundColor: Colors.black,
       appBar: AppBar(
         // backgroundColor: Colors.transparent,
-        title: Text('Cakmoji Guidebook'),
+        title: Text('Emotigrow Guidebook'),
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios),

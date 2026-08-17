@@ -60,7 +60,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Welcome to Cakmoji')),
+      appBar: AppBar(title: const Text('Welcome to Emotigrow')),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
         child: Form(

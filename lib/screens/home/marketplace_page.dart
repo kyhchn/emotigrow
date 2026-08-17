@@ -30,7 +30,7 @@ class _MarketplacePageState extends State<MarketplacePage> {
       imageAsset: 'assets/images/selada_keriting.png',
     ),
     MarketplaceItem(
-      name: 'Alat Monitoring Hidroponik CakMoji',
+      name: 'Alat Monitoring Hidroponik Emotigrow',
       location: 'Karanganyar',
       price: 'Rp 1.380.000',
       imageAsset: 'assets/images/alat_hidroponik.png',

@@ -58,7 +58,7 @@ class CakmojiApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Cakmoji',
+      title: 'Emotigrow',
       debugShowCheckedModeBanner: false,
       theme: buildAppTheme(),
       // Web is mobile-only: desktop-sized screens get a "use a phone" screen

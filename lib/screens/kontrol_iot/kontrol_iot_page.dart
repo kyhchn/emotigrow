@@ -81,7 +81,7 @@ class _KontrolIotPageState extends State<KontrolIotPage> {
   }
 
   /// Live-driven twin of the first demo plant: status, health score and the
-  /// matching Cakmoji emoticon all follow the current `final_output`.
+  /// matching Emotigrow emoticon all follow the current `final_output`.
   _PlantOption _liveTwin(KontrolIotLiveData live) {
     return _PlantOption(
       name: _demoPlants.first.name,

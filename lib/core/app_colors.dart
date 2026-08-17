@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-/// Design tokens extracted from the Cakmoji design (login screen, Figma).
+/// Design tokens extracted from the Emotigrow design (login screen, Figma).
 ///
 /// Use these constants instead of hard-coded colors so the whole app follows
 /// one palette.

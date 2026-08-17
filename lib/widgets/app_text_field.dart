@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../core/app_colors.dart';
 
-/// Reusable text input styled per the Cakmoji design system:
+/// Reusable text input styled per the Emotigrow design system:
 /// white fill, rounded corners, muted placeholder, green focus border.
 class AppTextField extends StatelessWidget {
   const AppTextField({

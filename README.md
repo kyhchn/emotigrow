@@ -1,4 +1,4 @@
-# Cakmoji (Flutter)
+# Emotigrow (Flutter)
 
 Flutter starter app using:
 - **Supabase** — authentication + user/profile info

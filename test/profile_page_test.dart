@@ -20,7 +20,7 @@ void main() {
     await tester.pump();
 
     // Fallback profile info.
-    expect(find.text('Pengguna Cakmoji'), findsOneWidget);
+    expect(find.text('Pengguna Emotigrow'), findsOneWidget);
     expect(find.text('Pengguna'), findsOneWidget); // default badge label
     // Menu items.
     expect(find.text('Edit Profil'), findsOneWidget);
@@ -49,14 +49,14 @@ void main() {
     await tester.pumpAndSettle();
 
     // Confirmation dialog is shown.
-    expect(find.text('Keluar dari Cakmoji?'), findsOneWidget);
+    expect(find.text('Keluar dari Emotigrow?'), findsOneWidget);
     expect(find.text('Anda akan kembali ke halaman masuk.'), findsOneWidget);
 
     // Cancel leaves the profile page untouched.
     await tester.tap(find.text('Batal'));
     await tester.pumpAndSettle();
 
-    expect(find.text('Keluar dari Cakmoji?'), findsNothing);
+    expect(find.text('Keluar dari Emotigrow?'), findsNothing);
     expect(find.text('Logout'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });

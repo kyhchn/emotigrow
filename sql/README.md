@@ -1,6 +1,6 @@
 # SQL Schema
 
-Database schema for the Cakmoji app (Supabase / PostgreSQL).
+Database schema for the Emotigrow app (Supabase / PostgreSQL).
 
 ## Files
 
