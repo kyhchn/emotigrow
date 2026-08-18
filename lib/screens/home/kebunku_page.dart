@@ -513,29 +513,29 @@ class _KebunkuPageState extends State<KebunkuPage> {
   /// Demo plants — replace with data from your backend.
   static const List<PlantCard> _plants = [
     PlantCard(
-      name: 'Selada Keriting',
+      name: 'Selada Keriting A',
       detail: 'Dataran tinggi',
       status: PlantStatus.sehat,
       imageAsset: 'assets/images/selada_keriting.png',
     ),
-    PlantCard(
-      name: 'Pakcoy',
-      detail: 'Dataran tinggi/rendah',
-      status: PlantStatus.perhatian,
-      temperature: '32',
-      humidity: '40%',
-      ph: 'pH 6.5',
-      imageAsset: 'assets/images/pakcoy.png',
-    ),
-    PlantCard(
-      name: 'Cabai Rawit',
-      detail: 'Lahan terbuka',
-      imageAsset: 'assets/images/cabai.png',
-      status: PlantStatus.darurat,
-      temperature: '31°C',
-      humidity: '54%',
-      ph: 'pH 5.9',
-    ),
+    // PlantCard(
+    //   name: 'Pakcoy',
+    //   detail: 'Dataran tinggi/rendah',
+    //   status: PlantStatus.perhatian,
+    //   temperature: '32',
+    //   humidity: '40%',
+    //   ph: 'pH 6.5',
+    //   imageAsset: 'assets/images/pakcoy.png',
+    // ),
+    // PlantCard(
+    //   name: 'Cabai Rawit',
+    //   detail: 'Lahan terbuka',
+    //   imageAsset: 'assets/images/cabai.png',
+    //   status: PlantStatus.darurat,
+    //   temperature: '31°C',
+    //   humidity: '54%',
+    //   ph: 'pH 5.9',
+    // ),
   ];
 
   @override

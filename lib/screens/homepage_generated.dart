@@ -189,7 +189,7 @@ class _AppHeader extends StatelessWidget {
             width: double.infinity,
             height: MediaQuery.sizeOf(context).height * 0.1,
             child: SvgPicture.asset(
-              'assets/icons/batik_background.svg',
+              'assets/icons/batik_new.svg',
               width: double.infinity,
               height: double.infinity,
               fit: BoxFit.fitWidth,
@@ -343,14 +343,14 @@ class _StatusGrid extends StatelessWidget {
       childAspectRatio: crossCount == 1 ? 2.8 : 0.92,
       children: const [
         _StatusCard(
-          title: 'Sehat',
-          count: 2,
+          title: 'Senang',
+          count: 1,
           accent: Color(0xFF22C55E),
           icon: Icons.check_circle_outline_rounded,
           imagePath: 'assets/images/opsi_happy.png',
         ),
         _StatusCard(
-          title: 'Waspada',
+          title: 'Normal',
           count: 0,
           accent: Color(0xFFFFCC00),
           // icon: Icons.warning_amber_rounded,
@@ -358,7 +358,7 @@ class _StatusGrid extends StatelessWidget {
           svgIcon: 'assets/icons/circle_danger.svg',
         ),
         _StatusCard(
-          title: 'Darurat',
+          title: 'Sedih',
           count: 0,
           accent: Color(0xFFEF4444),
           // icon: Icons.emergency_outlined,

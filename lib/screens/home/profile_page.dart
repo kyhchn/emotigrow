@@ -123,7 +123,7 @@ class _ProfilePageState extends State<ProfilePage> {
             children: [
               Positioned.fill(
                 child: SvgPicture.asset(
-                  'assets/icons/batik_background.svg',
+                  'assets/icons/batik_new.svg',
                   fit: BoxFit.cover,
                   width: double.infinity,
                   height: double.infinity,

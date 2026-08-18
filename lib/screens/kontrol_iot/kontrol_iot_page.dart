@@ -284,7 +284,7 @@ class _PlantOption {
 /// Demo garden plants — replace with data from your backend.
 const List<_PlantOption> _demoPlants = [
   _PlantOption(
-    name: 'Selada Keriting',
+    name: 'Selada Keriting A',
     status: _PlantStatus.sehat,
     health: 1,
     imageAsset: 'assets/images/selada.png',
@@ -292,18 +292,18 @@ const List<_PlantOption> _demoPlants = [
     emoticonAssetSmall: 'assets/images/opsi_happy.png',
   ),
   _PlantOption(
-    name: 'Pakcoy',
+    name: 'Selada Keriting B',
     status: _PlantStatus.perhatian,
     health: 0.55,
-    imageAsset: 'assets/images/pakcoy.png',
+    imageAsset: 'assets/images/selada.png',
     emoticonAssetBig: 'assets/images/agrimoji_flat.png',
     emoticonAssetSmall: 'assets/images/opsi_flat.png',
   ),
   _PlantOption(
-    name: 'Cabai Rawit',
+    name: 'Selada Keriting C',
     status: _PlantStatus.darurat,
     health: 0.3,
-    imageAsset: 'assets/images/cabai.png',
+    imageAsset: 'assets/images/selada.png',
     emoticonAssetBig: 'assets/images/agrimoji_sad.png',
     emoticonAssetSmall: 'assets/images/opsi_sad.png',
   ),
